@@ -1,1 +1,0 @@
-'D:\crist\TEC\Semestre 7\INTELIGENCIA ARTIFICIAL\Modelos\modeloPrecioBitcoin.pkl'
