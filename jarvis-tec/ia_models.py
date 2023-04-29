@@ -3,11 +3,7 @@ import pandas as pd
 import numpy as np
 import re
 import os
-
 from unidecode import unidecode
-from flask import Flask, request
-
-app = Flask(__name__)
 
 # *Dependencias:
 # * pip install pandas
@@ -18,10 +14,7 @@ app = Flask(__name__)
 
 # * Run command: python app.py
 
-# /precioBitcoin2017-08-08
-
-
-@app.route('/precioBitcoin/<string:date>', methods=['GET'])
+# /precioBitcoin/2017-08-08
 def precioBitcoin(date):
 
     # Cargar el modelo guardado con pickle
@@ -33,22 +26,20 @@ def precioBitcoin(date):
         r'D:\crist\TEC\Semestre 7\INTELIGENCIA ARTIFICIAL\Data\bitcoin_price_Training - bitcoin_price.2013Apr-2017Aug.csv.csv')
     data['Date'] = pd.to_datetime(data['Date'])
     data.set_index('Date', inplace=True)
-
-    prediction_date = pd.to_datetime(date)
+    try:
+        prediction_date = pd.to_datetime(date)
+    except:
+        return 'Lo siento, no se pudo predecir el precio del Bitcoin debido a que se ingresó un dato incorrecto'
     dias = (prediction_date - data.index[-1]).days
 
     # Hacer predicciones para el DataFrame de prueba
     predicciones = modelo.forecast(steps=dias)
 
     # Imprimir las predicciones
-    print(
-        f'El precio de Bitcoin para el {prediction_date.date()} será de ${predicciones[0]:.2f}')
-    return str(predicciones[0])
+    print(f'El precio de Bitcoin para el {prediction_date.date()} será de {predicciones[0]:.2f} dolares')
+    return str(f'El precio de Bitcoin para el {prediction_date.date()} será de {predicciones[0]:.2f} dolares')
 
 # /precioAutomovil/3/15000/50000/Gasolina/Particular/Manual/1
-
-
-@app.route('/precioAutomovil/<int:age>/<int:presentPrice>/<int:kmsDriven>/<string:fuelType>/<string:sellerType>/<string:transmission>/<int:owner>', methods=['GET'])
 def precioAutomovil(age, presentPrice, kmsDriven, fuelType, sellerType, transmission, owner):
 
     # Cargar el modelo guardado con pickle
@@ -75,13 +66,10 @@ def precioAutomovil(age, presentPrice, kmsDriven, fuelType, sellerType, transmis
     predicciones = modelo.predict(test_data)
 
     # Imprimir las predicciones
-    print('El precio del automóvil es de:', predicciones[0][0])
-    return str(predicciones[0][0])
+    print('El precio de venta del automóvil es de:', str(round(predicciones[0][0], 3)), 'dolares')
+    return ('El precio de venta del automóvil es de:', str(round(predicciones[0][0], 3)), 'dolares')
 
 # /recomendarPelicula/Tom and Huck/5
-
-
-@app.route('/recomendarPelicula/<string:title>/<int:num_recommendations>', methods=['GET'])
 def recomendarPelicula(title, num_recommendations):
 
     movies = pd.read_csv(
@@ -93,16 +81,19 @@ def recomendarPelicula(title, num_recommendations):
     # Seleccionar las columnas necesarias del dataframe
     ratings_matrix = pd.pivot_table(
         data, values='rating', index='userId', columns='title').fillna(0)
-
+    
+    list_movies = movies["title"].tolist()
     # Cargar el modelo guardado con pickle
     with open('D:\crist\TEC\Semestre 7\INTELIGENCIA ARTIFICIAL\Modelos\modeloRecomendarPelicula.pkl', 'rb') as archivo:
         modelo = pickle.load(archivo)
 
     # Busca el titulo en la lista de películas
     peliculaExistente = False
-    for column in ratings_matrix.columns:
-        if title in column:
+    for movie in list_movies:
+        if title.lower() in movie.lower():
+            title = movie
             peliculaExistente = True
+            break
 
     # Verificar si el título de la película se encuentra en ratings_matrix
     if (peliculaExistente == False):
@@ -114,24 +105,43 @@ def recomendarPelicula(title, num_recommendations):
     title = re.escape(title)
     idx = movies.loc[movies['title'].str.contains(title)].index[0]
 
+    try:
+        num_recommendations = int(num_recommendations)
+    except:
+        return 'Lo siento, no se pudo realizar la recomendación debido a que se ingresó un dato incorrecto'
+    
     # Obtener las películas similares utilizando el modelo KNN
     distances, indices = modelo.kneighbors(ratings_matrix.iloc[idx, :].values.reshape(
-        1, -1), n_neighbors=num_recommendations+1)
+        1, -1), n_neighbors= num_recommendations+1)
 
     # Crear una lista para almacenar las recomendaciones
-    movie_recommendations = []
+    # movie_recommendations = []
 
     # Recorrer las películas similares y añadir sus títulos a la lista de recomendaciones
+    movie_response = ''
     for i in range(1, len(distances.flatten())):
-        movie_recommendations.append(
-            movies.iloc[indices.flatten()[i]]['title'])
+        # movie_recommendations.append(
+        #     movies.iloc[indices.flatten()[i]]['title'])
         print('{0}: {1}, con una distancia de {2}'.format(
             i, movies.iloc[indices.flatten()[i]]['title'], distances.flatten()[i]))
+        movie_response = movie_response+ ', '+'{0}: {1}, con una distancia de {2}'.format(
+            i, movies.iloc[indices.flatten()[i]]['title'], distances.flatten()[i])
 
-    return movie_recommendations
+    return movie_response
+
+def replace_data(data, column, values):
+    if(len(values) == 2):
+        if data[column].isin(values).any():
+            data[column].replace({values[0]: 0, values[1]: 1}, inplace=True)
+        else:
+            data[column].replace({data[column]: 0}, inplace=True)
+    else:
+        if data[column].isin(values).any():
+            data[column].replace({values[0]: 0, values[1]: 1, values[2]: 2}, inplace=True)
+        else:
+            data[column].replace({data[column]: 0}, inplace=True)
 
 #/clienteCompañiaCelular/Male/0/No/No/56/Yes/Yes/Fiber optic/Yes/Yes/Yes/Yes/Yes/Yes/Two year/Yes/Credit card (automatic)/110.50/6045.90
-@app.route('/clienteCompañiaCelular/<string:gender>/<int:seniorCitizen>/<string:partner>/<string:dependents>/<int:tenure>/<string:phoneService>/<string:multipleLines>/<string:internetService>/<string:onlineSecurity>/<string:onlineBackup>/<string:deviceProtection>/<string:techSupport>/<string:streamingTV>/<string:streamingMovies>/<string:contract>/<string:paperlessBilling>/<string:paymentMethod>/<float:monthlyCharges>/<float:totalCharges>', methods=['GET'])
 def clienteCompañiaCelular(gender, seniorCitizen, partner, dependents, tenure, phoneService, multipleLines,
                            internetService, onlineSecurity, onlineBackup, deviceProtection, techSupport, 
                            streamingTV, streamingMovies, contract, paperlessBilling, paymentMethod, monthlyCharges, totalCharges):
@@ -139,7 +149,22 @@ def clienteCompañiaCelular(gender, seniorCitizen, partner, dependents, tenure, 
     # Cargar el modelo guardado con pickle
     with open('D:\crist\TEC\Semestre 7\INTELIGENCIA ARTIFICIAL\Modelos\modeloClienteCompañiaCelular.pkl', 'rb') as archivo:
         modelo = pickle.load(archivo)
+    list_paymentMethod = ["cheque electrónico", "cheque enviado por correo", "transferencia bancaria", "tarjeta de crédito"]
+    for method in list_paymentMethod:
+        if paymentMethod.lower() in method.lower():
+            paymentMethod = method
+            break
+        else:
+            paymentMethod = 'transferencia bancaria'
 
+    list_Contract = ["Month-to-month", "One year", "Two year"]
+    if 'mes' in contract.lower():
+        contract = list_Contract[0]
+    if '1' in contract.lower() or 'uno' in contract.lower():
+        contract = list_Contract[1]
+    else:
+        contract = list_Contract[2]
+     
     # Crear un nuevo DataFrame
     test_data = pd.DataFrame({
         'gender': [gender],
@@ -163,43 +188,36 @@ def clienteCompañiaCelular(gender, seniorCitizen, partner, dependents, tenure, 
         'TotalCharges': [totalCharges],
     })
 
-    # Imprimir las predicciones
-    test_data["gender"].replace({'Female': 0, 'Male': 1}, inplace=True)
-    test_data["Partner"].replace({"No": 0, "Yes": 1}, inplace=True)
-    test_data["Dependents"].replace({"No": 0, "Yes": 1}, inplace=True)
-    test_data["PhoneService"].replace({"No": 0, "Yes": 1}, inplace=True)
-    test_data["MultipleLines"].replace(
-        {"No phone service": 0, "No": 1, "Yes": 2}, inplace=True)
-    test_data["InternetService"].replace(
-        {"No": 0, "DSL": 1, "Fiber optic": 2}, inplace=True)
-    test_data["OnlineSecurity"].replace(
-        {"No internet service": 0, "No": 1, "Yes": 2}, inplace=True)
-    test_data["OnlineBackup"].replace(
-        {"No internet service": 0, "No": 1, "Yes": 2}, inplace=True)
-    test_data["DeviceProtection"].replace(
-        {"No internet service": 0, "No": 1, "Yes": 2}, inplace=True)
-    test_data["TechSupport"].replace(
-        {"No internet service": 0, "No": 1, "Yes": 2}, inplace=True)
-    test_data["StreamingTV"].replace(
-        {"No internet service": 0, "No": 1, "Yes": 2}, inplace=True)
-    test_data["StreamingMovies"].replace(
-        {"No internet service": 0, "No": 1, "Yes": 2}, inplace=True)
+    replace_data(test_data, "gender", ["femenino", "masculino"])
+    replace_data(test_data, "SeniorCitizen", ["no", "si"])
+    replace_data(test_data, "Partner", ["no", "si"])
+    replace_data(test_data, "Dependents", ["no", "si"])
+    replace_data(test_data, "PhoneService", ["no", "si"])
+    replace_data(test_data, "MultipleLines", ["sin servicio telefonico", "no", "si"])
+    replace_data(test_data, "InternetService", ["no", "dsl", "fibra optica"])
+    replace_data(test_data, "OnlineSecurity", ["sin servicio de internet", "no", "si"])
+    replace_data(test_data, "OnlineBackup", ["sin servicio de internet", "no", "si"])
+    replace_data(test_data, "DeviceProtection", ["sin servicio de internet", "no", "si"])
+    replace_data(test_data, "TechSupport", ["sin servicio de internet", "no", "si"])
+    replace_data(test_data, "StreamingTV", ["sin servicio de internet", "no", "si"])
+    replace_data(test_data, "StreamingMovies", ["sin servicio de internet", "no", "si"])
     test_data["Contract"].replace(
         {"Month-to-month": 0, "One year": 1, "Two year": 2}, inplace=True)
-    test_data["PaperlessBilling"].replace({"No": 0, "Yes": 1}, inplace=True)
-    test_data["PaymentMethod"].replace({"Electronic check": 0, "Mailed check": 1,
-                                       "Bank transfer (automatic)": 2, "Credit card (automatic)": 3}, inplace=True)
-
+    replace_data(test_data, "PaperlessBilling", ["no", "si"])
+    test_data["PaymentMethod"].replace({"cheque electrónico": 0, "cheque enviado por correo": 1,
+                                    "transferencia bancaria": 2, "tarjeta de crédito": 3}, inplace=True)
+    
     # Realizar la predicción con el modelo y los parámetros
     predicciones = modelo.predict(test_data)
 
     if predicciones == 1:
-         return('El cliente va a dejar la compañía de celulares')
+        print('El cliente va a dejar la compañía de celulares')
+        return('El cliente va a dejar la compañía de celulares')
     else:
+         print('El cliente no va a dejar la compañía de celulares')
          return('El cliente no va a dejar la compañía de celulares')
 
 #/masaCorporal/1.0/3/50.0/100.0/20.0/50.0/40.0/30.0/20.0/15.0/10.0/15.0/10.0/8.0
-@app.route('/masaCorporal/<float:density>/<int:age>/<float:weight>/<float:height>/<float:neck>/<float:chest>/<float:abdomen>/<float:hip>/<float:thigh>/<float:knee>/<float:ankle>/<float:biceps>/<float:forearm>/<float:wrist>', methods=['GET'])
 def masaCorporal(density, age, weight, height, neck, chest, abdomen, hip, thigh, knee, ankle, biceps, forearm, wrist):
     # Cargar el modelo guardado con pickle
     with open('D:\crist\TEC\Semestre 7\INTELIGENCIA ARTIFICIAL\Modelos\modeloMasaCorporal.pkl', 'rb') as archivo:
@@ -227,11 +245,10 @@ def masaCorporal(density, age, weight, height, neck, chest, abdomen, hip, thigh,
     predicciones = modelo.predict(test_data)
 
     # Imprimir las predicciones
-    print('La masa corporal del paciente es:', predicciones[0])
-    return str(predicciones[0])
+    print('La masa corporal del paciente es:', str(round(predicciones[0], 3)))
+    return 'La masa corporal del paciente es:', str(round(predicciones[0], 3))
 
 #/calidadVino/8.9/0.3/0.38/2.8/0.10/31/69/0.998/3.25/0.86/12.8/1/0
-@app.route('/calidadVino/<float:fixed>/<float:volatile>/<float:citric>/<float:residualSugar>/<float:chlorides>/<int:freeSulfurDioxide>/<int:totalSulfurDioxide>/<float:density>/<float:pH>/<float:sulphates>/<float:alcohol>/<int:red>/<int:white>', methods=['GET'])
 def calidadVino(fixed, volatile, citric, residualSugar, chlorides, freeSulfurDioxide, 
                 totalSulfurDioxide, density, pH, sulphates, alcohol, red, white):
     # Cargar el modelo guardado con pickle
@@ -260,22 +277,21 @@ def calidadVino(fixed, volatile, citric, residualSugar, chlorides, freeSulfurDio
 
     # Imprimir las predicciones
     print('La calidad del vino es de:', predicciones[0])
-    return str(predicciones[0])
+    return ('La calidad del vino es de:', str(predicciones[0]))
 
 #/cantidadInventario/Aliss/3/5/2024
-@app.route('/cantidadInventario/<store>/<item>/<month>/<year>', methods=['GET'])
 def cantidadInventario(store, item, month, year):
     # Cargar el modelo guardado con pickle
     with open('D:\crist\TEC\Semestre 7\INTELIGENCIA ARTIFICIAL\Modelos\modeloCantidadInventario.pkl', 'rb') as archivo:
         modelo = pickle.load(archivo)
     strStore = store
     store_codes = {'walmart': 1, 'pricesmart': 2, 'aliss': 3, 'h&m': 4,
-                   'zara': 5, 'forever': 6, 'ikea': 7, 'adidas': 8, 'nike': 9, 'pandora': 10}
+                   'zara': 5, 'maxi palí': 6, 'ikea': 7, 'adidas': 8, 'nike': 9, 'pandora': 10}
     store = store_codes.get(unidecode(store).lower(), 0)
 
     if (store == 0):
-        print('Tienda no registrada')
-        return 'Tienda no registrada'
+        print('Lo siento, no se pudo realizar la predicción debido a que se ingresó una tienda no registrada')
+        return 'Lo siento, no se pudo realizar la predicción debido a que se ingresó una tienda no registrada'
 
     # Crear un nuevo DataFrame
     test_data = pd.DataFrame({
@@ -289,31 +305,30 @@ def cantidadInventario(store, item, month, year):
     predicciones = modelo.predict(test_data)
 
     # Imprimir las predicciones
-    print('La cantidad de inventario para el item {}, en la empresa {}, es de:'.format(item, strStore), predicciones[0])
-    return str(predicciones[0])
+    print('La cantidad de inventario para el item {}, en la empresa {}, es de: {}'.format(item, strStore, round(predicciones[0], 3)))
+    return str('La cantidad de inventario para el item {}, en la empresa {}, es de: {}'.format(item, strStore, round(predicciones[0], 3)))
 
 #/tarifaTaxi/1.0/0.5/3.2/2/0.0/Tarjeta de crédito/estándar/0.5/0.3
-@app.route('/tarifaTaxi/<float:driver>/<float:mtaTax>/<float:distante>/<int:numPassenger>/<float:tollAmount>/<string:paymentMethod>/<string:rateCode>/<float:extraCharges>/<float:improvementCharge>', methods=['GET'])
 def tarifaTaxi(driver, mtaTax, distante, numPassenger, tollAmount, paymentMethod, rateCode, extraCharges, improvementCharge):
     # Cargar el modelo guardado con pickle
     with open('D:\crist\TEC\Semestre 7\INTELIGENCIA ARTIFICIAL\Modelos\modeloTarifaTaxi.pkl', 'rb') as archivo:
         modelo = pickle.load(archivo)
-
-    payment_method = {'tarjeta de credito': 1, 'efectivo': 2,
-                      'viaje gratis': 3, 'disputado': 4, 'desconocido': 5, 'viaje anulado': 6}
-    paymentMethod = payment_method.get(unidecode(paymentMethod).lower(), 0)
+    
+    payment_method1 = {'tarjeta de crédito': 1, 'efectivo': 2, 'viaje gratis': 3, 'disputado': 4, 'desconocido': 5, 'viaje anulado': 6}
+    print(payment_method1.get(paymentMethod.lower()))
+    paymentMethod = payment_method1.get(paymentMethod.lower(), 0)
 
     if (paymentMethod == 0):
-        print('El método de pago no existe')
-        return 'El método de pago no existe'
+        print('Lo siento, no se pudo realizar la predicción debido a que se ingresó un método de pago no existente')
+        return 'Lo siento, no se pudo realizar la predicción debido a que se ingresó un método de pago no existente'
 
-    rate_code = {'estandar': 1, 'aeropuerto': 2, 'connaught place': 3,
+    rate_code = {'estándar': 1, 'aeropuerto': 2, 'lugar de connaught': 3,
                  'noida': 4, 'tarifa negociada': 5, 'viaje compartido': 6}
-    rateCode = rate_code.get(unidecode(rateCode).lower(), 0)
+    rateCode = rate_code.get(rateCode.lower(), 0)
 
     if (rateCode == 0):
-        print('El código de tarifa para el viaje no existe')
-        return 'El código de tarifa para el viaje no existe'
+        print('Lo siento, no se pudo realizar la predicción debido a que se ingresó un código de tarifa para el viaje no existente')
+        return 'Lo siento, no se pudo realizar la predicción debido a que se ingresó un código de tarifa para el viaje no existente'
 
     # Crear un nuevo DataFrame
     test_data = pd.DataFrame({
@@ -330,27 +345,12 @@ def tarifaTaxi(driver, mtaTax, distante, numPassenger, tollAmount, paymentMethod
 
     # Realizar la predicción con el modelo y los parámetros
     predicciones = modelo.predict(test_data)
-
+    predicciones =  (predicciones * 10) * 0.012
     # Imprimir las predicciones
-    print('La tarifa del viaje es de:', predicciones[0])
-    return str(predicciones[0])
+    print('La tarifa del viaje es de:', str(round(predicciones[0], 3)), 'dolares')
+    return ('La tarifa del viaje es de:', str(round(predicciones[0], 3)), 'dolares')
 
-#/delayViajeAvion/1853.0
-# /520
-# /1439.0
-# /1004
-# /UA
-# /172.0
-# /84.0
-# /235.0
-# /48.0
-# /22.0
-# /1230
-# /22.0
-# /0
-# /2.0
-# /11.0
-@app.route('/delayViajeAvion/<float:depTime>/<int:crsDepTime>/<float:arrTime>/<int:crsArrTime>/<string:uniqueCarrier>/<float:actualElapsedTime>/<float:crsElapsedTime>/<float:airTime>/<float:arrDelay>/<float:depDelay>/<int:distance>/<float:carrierDelay>/<int:weatherDelay>/<float:nasDelay>/<float:securityDelay>', methods=['GET'])
+#/delayViajeAvion/1853.0/520/1439.0/1004/UA/172.0/84.0/235.0/48.0/22.0/1230/22.0/0/2.0/11.0
 def delayViajeAvion(depTime, crsDepTime, arrTime, crsArrTime, uniqueCarrier, actualElapsedTime, crsElapsedTime, airTime, arrDelay, 
                     depDelay, distance, carrierDelay, weatherDelay, nasDelay, securityDelay):
     # Cargar el modelo guardado con pickle
@@ -367,8 +367,8 @@ def delayViajeAvion(depTime, crsDepTime, arrTime, crsArrTime, uniqueCarrier, act
     uniqueCarrier = unique_carrier.get(uniqueCarrier.lower(), 0)
 
     if (uniqueCarrier == 0):
-        print('Ese código de identificación de aerolínea no existe')
-        return 'Ese código de identificación de aerolínea no existe'
+        print('Lo siento, no se pudo realizar la predicción debido a que se ingresó un código de identificación de aerolínea no existente')
+        return 'Lo siento, no se pudo realizar la predicción debido a que se ingresó un código de identificación de aerolínea no existente'
 
     # Crear un nuevo DataFrame
     test_data = pd.DataFrame({
@@ -393,11 +393,10 @@ def delayViajeAvion(depTime, crsDepTime, arrTime, crsArrTime, uniqueCarrier, act
     predicciones = modelo.predict(test_data)
 
     # Imprimir las predicciones
-    print('El retraso del vuelo es de:', round(predicciones[0]*60, 3))
-    return str(round(predicciones[0]*60, 3))
+    print('El retraso del vuelo es de:', str(round(predicciones[0]*60, 3)), 'Segundos')
+    return ('El retraso del vuelo es de:', str(round(predicciones[0]*60, 3)), 'Segundos')
 
-#/precioAguacate/10/17074.83/1527.63/71976.41/75.78/8940.04/97.49/0.0/2/2024/San Diego
-@app.route('/precioAguacate/<int:totalVolume>/<float:d4046>/<float:d4225>/<float:d4770>/<float:totalBags>/<float:smallBags>/<float:largeBags>/<float:xLargeBags>/<int:dtype>/<int:year>/<string:region>', methods=['GET'])
+#/precioAguacate/100.9/60.2/30.6/10.1/150.6/100.4/50.2/0.0/2/2023/San Diego
 def precioAguacate(totalVolume, d4046, d4225, d4770, totalBags, smallBags, largeBags, xLargeBags, dtype, year, region):
     # Cargar el modelo guardado con pickle
     with open('D:\crist\TEC\Semestre 7\INTELIGENCIA ARTIFICIAL\Modelos\modeloPrecioAguacate.pkl', 'rb') as archivo:
@@ -442,27 +441,23 @@ def precioAguacate(totalVolume, d4046, d4225, d4770, totalBags, smallBags, large
     return str(predicciones[0])
 
 
-if __name__ == '__main__':
-    app.run(debug=True, port=5000)
-
 # print('----------------------------------')
-# precioBitcoin('2017-08-08')
+# precioBitcoin('2023-04-21')
 # print('----------------------------------')
 # precioAutomovil(2, 9.85, 6900, "Gasolina", "Particular", "Manual", 1)
 # print('----------------------------------')
-# recomendarPelicula("Tom and Huck", 5)
+#recomendarPelicula("casino", 5)
 # print('----------------------------------')
-# clienteCompañiaCelular('Male', 0, 'No', 'No', 56, 'Yes', 'Yes', 'Fiber optic', 'Yes', 'Yes', 'Yes',
-#                        'Yes', 'Yes', 'Yes', 'Two year', 'Yes', 'Credit card (automatic)', 110.50, 6045.90)
+# clienteCompañiaCelular('masculino', 'no', 'no', 'no', 56, 'si', 'si', 'fibra optica', 'si', 'si', 'si', 'si', 'si', 'si', '2 años', 'si', 'tarjeta de credito', 110.50, 6045.90)
 # print('----------------------------------')
 # masaCorporal(1.0, 3, 50.0, 100.0, 20.0, 50.0, 40.0, 30.0, 20.0, 15.0, 10.0, 15.0, 10.0, 8.0)
 # print('----------------------------------')
 # calidadVino(8.9, 0.3, 0.38, 2.8, 0.10, 31, 69, 0.998, 3.25, 0.86, 12.8, 1, 0)
 # print('----------------------------------')
-# cantidadInventario('Aliss', 3, 5, 2024)
+# cantidadInventario('walmart', 3, 5, 2024)
 # print('----------------------------------')
-# tarifaTaxi(1.0, 0.5, 3.2, 2, 0.0, 'Tarjeta de crédito', 'estándar', 0.5, 0.3)
+# tarifaTaxi(1.0, 0.5, 3.2, 2, 0.0, 'tarjeta de crédito', 'estándar', 0.5, 0.3)
 # print('----------------------------------')
 # delayViajeAvion(1853.0, 520, 1439.0, 1004, 'UA', 172.0, 84.0, 235.0, 48.0, 22.0, 1230, 22.0, 0, 2.0, 11.0)
 # print('----------------------------------')
-# precioAguacate(10, 17074.83, 1527.63, 71976.41, 75.78, 8940.04, 97.49, 0.0, 2, 2024, 'San Diego')
+precioAguacate(10, 17074.83, 1527.63, 71976.41, 75.78, 8940.04, 97.49, 0.0, 2, 2024, 'San Diego')
