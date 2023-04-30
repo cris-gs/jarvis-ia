@@ -12,7 +12,8 @@ import pyttsx3
 # Crear objeto de reconocimiento de voz
 r = sr.Recognizer()
 
-# Definir una función para reconocer el audio y devolver una respuesta
+
+# Función para reconocer el audio y devolver una respuesta
 def recognize_audio():
   # Configurar el micrófono como fuente de audio
   with sr.Microphone() as source:
@@ -36,6 +37,7 @@ def recognize_audio():
 
     if (response == "Lo siento, no he entendido su respuesta. Por favor, seleccione una opción válida."):
       return {"data": response, "message_understood": False}
+    
     elif(response['id'] == 1):
       date = ''
       engine.say(response['messages'][0])
@@ -57,8 +59,10 @@ def recognize_audio():
             elif(text == 'iess'):
               text = '10'
             if(date == ''):
+              int(text)
               date = text
             else:
+              int(text)
               date = date + '-' + text
             break
           except sr.UnknownValueError:
@@ -67,17 +71,19 @@ def recognize_audio():
           except sr.RequestError as e:
             engine.say("Error al intentar reconocer la voz: " + e)
             engine.runAndWait()
+          except ValueError:
+            engine.say("El dato ingresado es incorrecto, por favor vuelva a brindar el dato")
+            engine.runAndWait()
       return {"data": precioBitcoin(date), "message_understood": True}
-
 
     elif(response['id'] == 2):
       while True:
         data = []
         engine.say(response['messages'][0])
         engine.runAndWait()
-        for message in response['messages'][1:]:
+        for index, message in enumerate(response['messages'][1:]):
           while True:
-            engine.say(message)
+            engine.say(message['message'])
             engine.runAndWait()
             with sr.Microphone() as source:
               print("Grabando")
@@ -87,11 +93,20 @@ def recognize_audio():
             try:
               text = r.recognize_google(audio, language="es-ES") # Convertir el audio en texto usando el servicio de reconocimiento de voz de Google
               print("Ha dicho: " + text)
+              text = text.replace(",", "")
+              text = text.replace(".", "")
+
               if(text ==  'uno'):
                 text = '1'
               elif(text ==  'iess'):
                 text = '10'
-              text = text.replace(",", "")
+
+              if(message['type'] == 'str'):
+                text = message['options'].get(text.lower(), 3)
+                if text == 3: int('error')
+              else:
+                text = int(text)
+              
               data.append(text)
               break
             except sr.UnknownValueError:
@@ -100,9 +115,18 @@ def recognize_audio():
             except sr.RequestError as e:
               engine.say("Error al intentar reconocer la voz: " + e)
               engine.runAndWait()
+            except ValueError:
+              engine.say("El dato ingresado es incorrecto, por favor vuelva a brindar el dato")
+              engine.runAndWait()
+            except TypeError:
+              engine.say("El dato ingresado es incorrecto, por favor vuelva a brindar el dato")
+              engine.runAndWait()
         try:      
-          return {"data": precioAutomovil(int(data[0]), int(data[1]), int(data[2]), data[3], data[4], data[5], int(data[6])), "message_understood": True}
+          return {"data": precioAutomovil(data[0], data[1], data[2], data[3], data[4], data[5], data[6]), "message_understood": True}
         except ValueError:
+          engine.say("Uno de los datos es incorrecto, por favor vuelva a brindar los datos")
+          engine.runAndWait()
+        except IndexError:
           engine.say("Uno de los datos es incorrecto, por favor vuelva a brindar los datos")
           engine.runAndWait()
 
@@ -110,7 +134,9 @@ def recognize_audio():
       data = []
       engine.say(response['messages'][0])
       engine.runAndWait()
-      for message in response['messages'][1:]:
+      movies = pd.read_csv('D:\crist\TEC\Semestre 7\INTELIGENCIA ARTIFICIAL\Data\movies.csv')
+      list_movies = movies["title"].tolist()
+      for index, message in enumerate(response['messages'][1:]):
         while True:
           engine.say(message)
           engine.runAndWait()
@@ -126,6 +152,18 @@ def recognize_audio():
               text = '1'
             elif(text ==  'iess'):
                 text = '10'
+
+            if(index == 0):
+              pelicula_existente = False
+              for movie in list_movies:
+                if text.lower() in movie.lower():
+                  text = movie
+                  pelicula_existente = True
+                  break
+              if(pelicula_existente == False):
+                int('error')
+            else:
+              text = int(text)
             data.append(text)
             break
           except sr.UnknownValueError:
@@ -134,6 +172,20 @@ def recognize_audio():
           except sr.RequestError as e:
             engine.say("Error al intentar reconocer la voz: " + e)
             engine.runAndWait()
+          except ValueError:
+              if(index == 0):
+                  engine.say("Ese nombre de la película no está registrado, por favor vuelva a intentar con otra película")
+                  engine.runAndWait()
+              else:
+                engine.say("El dato ingresado es incorrecto, por favor vuelva a brindar el dato")
+                engine.runAndWait()
+          except TypeError:
+            if(index == 0):
+                engine.say("Ese nombre de la película no está registrado, por favor vuelva a intentar con otra película")
+                engine.runAndWait()
+            else:
+              engine.say("El dato ingresado es incorrecto, por favor vuelva a brindar el dato")
+              engine.runAndWait()
       return {"data": recomendarPelicula(data[0], data[1]), "message_understood": True}
     
     elif(response['id'] == 4):
@@ -141,9 +193,9 @@ def recognize_audio():
         data = []
         engine.say(response['messages'][0])
         engine.runAndWait()
-        for index, message in enumerate(response['messages'][1:]):
+        for message in response['messages'][1:]:
           while True:
-            engine.say(message)
+            engine.say(message['message'])
             engine.runAndWait()
             with sr.Microphone() as source:
               print("Grabando")
@@ -158,14 +210,19 @@ def recognize_audio():
               elif(text ==  'iess'):
                 text = '10'
               text = text.replace(",", ".")
-              if(index == 11):
-                if(text == 'rojo'):
+
+              if(message['type'] == 'str'):
+                text = message['options'].get(text.lower(), 2)
+                if text == 2: 
+                  int('error')
+                elif text == 0:
                   data.append(1)
                   data.append(0)
-                else:
+                elif text == 1:
                   data.append(0)
                   data.append(1)
               else:
+                text = float(text)
                 data.append(text)
               break
             except sr.UnknownValueError:
@@ -174,9 +231,15 @@ def recognize_audio():
             except sr.RequestError as e:
               engine.say("Error al intentar reconocer la voz: " + e)
               engine.runAndWait()
+            except ValueError:
+              engine.say("El dato ingresado es incorrecto, por favor vuelva a brindar el dato")
+              engine.runAndWait()
+            except TypeError:
+              engine.say("El dato ingresado es incorrecto, por favor vuelva a brindar el dato")
+              engine.runAndWait()
         try:
-          return {"data": calidadVino(float(data[0]), float(data[1]), float(data[2]), float(data[3]), float(data[4]), int(data[5]), int(data[6]), 
-                                    float(data[7]), float(data[8]), float(data[9]), float(data[10]), int(data[11]), int(data[12])), "message_understood": True}
+          return {"data": calidadVino(data[0], data[1], data[2], data[3], data[4], data[5], data[6], 
+                                    data[7], data[8], data[9], data[10], data[11], data[12]), "message_understood": True}
         except ValueError:
           engine.say("Uno de los datos es incorrecto, por favor vuelva a brindar los datos")
           engine.runAndWait()
@@ -186,9 +249,9 @@ def recognize_audio():
         data = []
         engine.say(response['messages'][0])
         engine.runAndWait()
-        for index, message in enumerate(response['messages'][1:]):
+        for message in response['messages'][1:]:
           while True:
-            engine.say(message)
+            engine.say(message['message'])
             engine.runAndWait()
             with sr.Microphone() as source:
               print("Grabando")
@@ -204,6 +267,13 @@ def recognize_audio():
                 text = '10'
               elif(text == 'Alice'):
                 text = 'Aliss'
+
+              if(message['type'] == 'str'):
+                text = message['options'].get(text.lower(), 0)
+                if text == 0: 
+                  int('error')
+              else:
+                int(text)
               data.append(text)
               break
             except sr.UnknownValueError:
@@ -212,8 +282,14 @@ def recognize_audio():
             except sr.RequestError as e:
               engine.say("Error al intentar reconocer la voz: " + e)
               engine.runAndWait()
+            except ValueError:
+              engine.say("El dato ingresado es incorrecto, por favor vuelva a brindar el dato")
+              engine.runAndWait()
+            except TypeError:
+              engine.say("El dato ingresado es incorrecto, por favor vuelva a brindar el dato")
+              engine.runAndWait()
         try:
-          return {"data": cantidadInventario(data[0], int(data[1]), int(data[2]), int(data[3])), "message_understood": True}
+          return {"data": cantidadInventario(data[0], data[1], data[2], data[3]), "message_understood": True}
         except ValueError:
           engine.say("Uno de los datos es incorrecto, por favor vuelva a brindar los datos")
           engine.runAndWait()
@@ -225,7 +301,7 @@ def recognize_audio():
         engine.runAndWait()
         for index, message in enumerate(response['messages'][1:]):
           while True:
-            engine.say(message)
+            engine.say(message['message'])
             engine.runAndWait()
             with sr.Microphone() as source:
               print("Grabando")
@@ -240,6 +316,13 @@ def recognize_audio():
               elif(text ==  'iess'):
                 text = '10'
               text = text.replace(",", ".")
+
+              if(message['type'] == 'str'):
+                text = message['options'].get(text.lower(), 7)
+                if text == 7: int('error')
+              else:
+                text = float(text)
+
               data.append(text)
               break
             except sr.UnknownValueError:
@@ -248,8 +331,14 @@ def recognize_audio():
             except sr.RequestError as e:
               engine.say("Error al intentar reconocer la voz: " + e)
               engine.runAndWait()
+            except ValueError:
+              engine.say("El dato ingresado es incorrecto, por favor vuelva a brindar el dato")
+              engine.runAndWait()
+            except TypeError:
+              engine.say("El dato ingresado es incorrecto, por favor vuelva a brindar el dato")
+              engine.runAndWait()
         try:
-          return {"data": tarifaTaxi(float(data[0]), float(data[1]), float(data[2]), int(data[3]), float(data[4]), data[5], data[6], float(data[7]), float(data[8])), "message_understood": True}
+          return {"data": tarifaTaxi(data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7], data[8]), "message_understood": True}
         except ValueError:
           engine.say("Uno de los datos es incorrecto, por favor vuelva a brindar los datos")
           engine.runAndWait()
@@ -261,15 +350,14 @@ def recognize_audio():
         engine.runAndWait()
         for index, message in enumerate(response['messages'][1:]):
             if index > 7 and index <= 14:
-              if data[7] == 'si':
+              if data[7] == 1:
                 while True:
-                  engine.say(message)
+                  engine.say(message['message'])
                   engine.runAndWait()
                   with sr.Microphone() as source:
                     print("Grabando")
                     audio = r.listen(source)
                   print("Dejé de grabar")
-                  print('si tiene internet')
                   try:
                     text = r.recognize_google(audio, language="es-ES") # Convertir el audio en texto usando el servicio de reconocimiento de voz de Google
                     print("Ha dicho: " + text)
@@ -277,9 +365,16 @@ def recognize_audio():
                       text = '1'
                     elif(text ==  'iess'):
                       text = '10'
-                    elif(text ==  'sí'):
-                      text = 'si'
                     text = text.replace(",", ".")
+
+                    if(message['type'] == 'str'):
+                      text = message['options'].get(text.lower(), 4)
+                      if text == 4: int('error')
+                    elif(message['type'] == 'int'):
+                      text = int(text)
+                    else:
+                      text = float(text)
+
                     data.append(text)
                     break
                   except sr.UnknownValueError:
@@ -288,12 +383,17 @@ def recognize_audio():
                   except sr.RequestError as e:
                     engine.say("Error al intentar reconocer la voz: " + e)
                     engine.runAndWait()
+                  except ValueError:
+                    engine.say("El dato ingresado es incorrecto, por favor vuelva a brindar el dato")
+                    engine.runAndWait()
+                  except TypeError:
+                    engine.say("El dato ingresado es incorrecto, por favor vuelva a brindar el dato")
+                    engine.runAndWait()
               else:
-                print('no tiene internet')
-                data.append('sin servicio de internet')
+                data.append(0)
             else:
               while True:
-                engine.say(message)
+                engine.say(message['message'])
                 engine.runAndWait()
                 with sr.Microphone() as source:
                   print("Grabando")
@@ -306,9 +406,16 @@ def recognize_audio():
                     text = '1'
                   elif(text ==  'iess'):
                     text = '10'
-                  elif(text ==  'sí'):
-                    text = 'si'
                   text = text.replace(",", ".")
+                  
+                  if(message['type'] == 'str'):
+                    text = message['options'].get(text.lower(), 4)
+                    if text == 4: int('error')
+                  elif(message['type'] == 'int'):
+                    text = int(text)
+                  else:
+                    text = float(text)
+
                   data.append(text)
                   break
                 except sr.UnknownValueError:
@@ -317,10 +424,16 @@ def recognize_audio():
                 except sr.RequestError as e:
                   engine.say("Error al intentar reconocer la voz: " + e)
                   engine.runAndWait()
+                except ValueError:
+                  engine.say("El dato ingresado es incorrecto, por favor vuelva a brindar el dato")
+                  engine.runAndWait()
+                except TypeError:
+                  engine.say("El dato ingresado es incorrecto, por favor vuelva a brindar el dato")
+                  engine.runAndWait()
         try:
-          return {"data": clienteCompañiaCelular(data[0], data[1], data[2], data[3], int(data[4]), data[5], data[6], 
+          return {"data": clienteCompañiaCelular(data[0], data[1], data[2], data[3], data[4], data[5], data[6], 
                                                 data[8], data[9], data[10], data[11], data[12], data[13], data[14], 
-                                                data[15], data[16], data[17], float(data[18]), float(data[19])), "message_understood": True}
+                                                data[15], data[16], data[17], data[18], data[19]), "message_understood": True}
         except ValueError:
           engine.say("Uno de los datos es incorrecto, por favor vuelva a brindar los datos")
           engine.runAndWait()
@@ -332,7 +445,7 @@ def recognize_audio():
         engine.runAndWait()
         for index, message in enumerate(response['messages'][1:]):
           while True:
-            engine.say(message)
+            engine.say(message['message'])
             engine.runAndWait()
             with sr.Microphone() as source:
               print("Grabando")
@@ -347,6 +460,15 @@ def recognize_audio():
               elif(text ==  'iess'):
                 text = '10'
               text = text.replace(",", ".")
+
+              if(message['type'] == 'str'):
+                text = message['options'].get(text.lower(), 0)
+                if text == 0: int('error')
+              elif(message['type'] == 'float'):
+                text = float(text)
+              else:
+                text = int(text)
+
               data.append(text)
               break
             except sr.UnknownValueError:
@@ -355,10 +477,16 @@ def recognize_audio():
             except sr.RequestError as e:
               engine.say("Error al intentar reconocer la voz: " + e)
               engine.runAndWait()
+            except ValueError:
+              engine.say("El dato ingresado es incorrecto, por favor vuelva a brindar el dato")
+              engine.runAndWait()
+            except TypeError:
+              engine.say("El dato ingresado es incorrecto, por favor vuelva a brindar el dato")
+              engine.runAndWait()
         try:
-          return {"data": delayViajeAvion(float(data[0]), int(data[1]), float(data[2]), int(data[3]), data[4], float(data[5]), 
-                                          float(data[6]), float(data[7]), float(data[8]), float(data[9]), int(data[10]),
-                                          float(data[11]), int(data[12]), float(data[13]), float(data[14])), "message_understood": True}
+          return {"data": delayViajeAvion(data[0], data[1], data[2], data[3], data[4], data[5], 
+                                          data[6], data[7], data[8], data[9], data[10],
+                                          data[11], data[12], data[13], data[14]), "message_understood": True}
         except ValueError:
           engine.say("Uno de los datos es incorrecto, por favor vuelva a brindar los datos")
           engine.runAndWait()
@@ -370,7 +498,7 @@ def recognize_audio():
         engine.runAndWait()
         for index, message in enumerate(response['messages'][1:]):
           while True:
-            engine.say(message)
+            engine.say(message['message'])
             engine.runAndWait()
             with sr.Microphone() as source:
               print("Grabando")
@@ -385,6 +513,11 @@ def recognize_audio():
               elif(text ==  'iess'):
                 text = '10'
               text = text.replace(",", ".")
+
+              if(message['type'] == 'float'):
+                text = float(text)
+              else:
+                text = int(text)
               data.append(text)
               break
             except sr.UnknownValueError:
@@ -393,10 +526,16 @@ def recognize_audio():
             except sr.RequestError as e:
               engine.say("Error al intentar reconocer la voz: " + e)
               engine.runAndWait()
+            except ValueError:
+              engine.say("El dato ingresado es incorrecto, por favor vuelva a brindar el dato")
+              engine.runAndWait()
+            except TypeError:
+              engine.say("El dato ingresado es incorrecto, por favor vuelva a brindar el dato")
+              engine.runAndWait()
         try:
-          return {"data": masaCorporal(float(data[0]), int(data[1]), float(data[2]), float(data[3]), float(data[4]), float(data[5]), 
-                                          float(data[6]), float(data[7]), float(data[8]), float(data[9]), float(data[10]),
-                                          float(data[11]), float(data[12]), float(data[13])), "message_understood": True}
+          return {"data": masaCorporal(data[0], data[1], data[2], data[3], data[4], data[5], 
+                                          data[6], data[7], data[8], data[9], data[10],
+                                          data[11], data[12], data[13]), "message_understood": True}
         except ValueError:
           engine.say("Uno de los datos es incorrecto, por favor vuelva a brindar los datos")
           engine.runAndWait()
@@ -408,7 +547,7 @@ def recognize_audio():
         engine.runAndWait()
         for index, message in enumerate(response['messages'][1:]):
           while True:
-            engine.say(message)
+            engine.say(message['message'])
             engine.runAndWait()
             with sr.Microphone() as source:
               print("Grabando")
@@ -423,6 +562,15 @@ def recognize_audio():
               elif(text ==  'iess'):
                 text = '10'
               text = text.replace(",", ".")
+
+              if(message['type'] == 'str'):
+                text = message['options'].get(text.lower(), 55)
+                if text == 55: int('error')
+              elif(message['type'] == 'float'):
+                text = float(text)
+              else:
+                text = int(text)
+
               data.append(text)
               break
             except sr.UnknownValueError:
@@ -431,9 +579,15 @@ def recognize_audio():
             except sr.RequestError as e:
               engine.say("Error al intentar reconocer la voz: " + e)
               engine.runAndWait()
+            except ValueError:
+              engine.say("El dato ingresado es incorrecto, por favor vuelva a brindar el dato")
+              engine.runAndWait()
+            except TypeError:
+              engine.say("El dato ingresado es incorrecto, por favor vuelva a brindar el dato")
+              engine.runAndWait()
         try:
-          return {"data": precioAguacate(float(data[0]), float(data[1]), float(data[2]), float(data[3]), float(data[4]), float(data[5]), 
-                                          float(data[6]), float(data[7]), int(data[8]), int(data[9]), data[10]), "message_understood": True}
+          return {"data": precioAguacate(data[0], data[1], data[2], data[3], data[4], data[5], 
+                                          data[6], data[7], data[8], data[9], data[10]), "message_understood": True}
         except ValueError:
           engine.say("Uno de los datos es incorrecto, por favor vuelva a brindar los datos")
           engine.runAndWait()    

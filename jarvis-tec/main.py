@@ -17,8 +17,8 @@ def saluda():  # Saludamos al usuario
   engine.setProperty('voice', 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Speech\Voices\Tokens\TTS_MS_ES-MX_SABINA_11.0')
   engine.setProperty('voice', voices[2].id) 
 
-  # engine.say("Hola, soy Jarvis TEC su asistente personal. ¿Qué modelo quiere usar?")
-  # engine.runAndWait()
+  engine.say("Hola, soy Jarvis TEC su asistente personal. ¿Qué modelo quiere usar?")
+  engine.runAndWait()
 
   engine.say(menu)
   engine.runAndWait()
@@ -42,7 +42,7 @@ if __name__ == '__main__':
     app.run(debug=True)
 
 #Opción 1 -> 2017/08/08
-#Opción 2 -> 3/15000/50000/Gasolina/Particular/Manual/1
+#Opción 2 -> 3/15000/50000/Gasolina/Consecionario/Manual/1
 #Opción 3 -> Tom and Huck/5
 #Opción 4 -> 8.9/0.3/0.38/2.8/0.10/31/69/0.998/3.25/0.86/12.8/1/0
 #Opción 5 -> Aliss/3/5/2024
