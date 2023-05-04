@@ -1,15 +1,26 @@
 # from voice import *
 from voice_recognition import *
+from face_recognition import capture_and_detect_emotions
 from options import menu
 import pyttsx3
 
 # Definimos el punto de entrada de nuestro programa
-from flask import Flask
+from flask import Flask, request
 
 app = Flask(__name__)
 
-@app.route('/', methods=['GET', 'POST'])
-def saluda():  # Saludamos al usuario
+@app.route('/', methods=['GET'])
+def init():
+    if request.path == '/':
+        return 'Hola'
+    return 'No encontrado'
+
+@app.route('/face', methods=['GET', 'POST'])
+def recognize_emotions():
+  return(capture_and_detect_emotions())
+  
+@app.route('/voice', methods=['GET', 'POST'])
+def greets():  # Saludamos al usuario
   engine = pyttsx3.init()
   voices = engine.getProperty('voices')
 
