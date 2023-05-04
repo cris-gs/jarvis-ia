@@ -33,7 +33,7 @@ def recognize_audio():
 
     # Seleccionar una voz diferente (en este caso, la primera de la lista)
     engine.setProperty('voice', 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Speech\Voices\Tokens\TTS_MS_ES-MX_SABINA_11.0')
-    engine.setProperty('voice', voices[2].id) 
+    engine.setProperty('voice', voices[0].id) 
 
     if (response == "Lo siento, no he entendido su respuesta. Por favor, seleccione una opción válida."):
       return {"data": response, "message_understood": False}

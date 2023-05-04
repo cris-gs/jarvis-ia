@@ -10,7 +10,7 @@ voices = engine.getProperty('voices')
 
 # Seleccionar una voz diferente (en este caso, la primera de la lista)
 engine.setProperty('voice', 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Speech\Voices\Tokens\TTS_MS_ES-MX_SABINA_11.0')
-engine.setProperty('voice', voices[2].id) 
+engine.setProperty('voice', voices[0].id) 
 
 def jarvisSay(message):
   # Hacer que el asistente diga el mensaje

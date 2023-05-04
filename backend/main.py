@@ -15,7 +15,7 @@ def saluda():  # Saludamos al usuario
 
   # Seleccionar una voz diferente (en este caso, la primera de la lista)
   engine.setProperty('voice', 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Speech\Voices\Tokens\TTS_MS_ES-MX_SABINA_11.0')
-  engine.setProperty('voice', voices[2].id) 
+  engine.setProperty('voice', voices[0].id) 
 
   engine.say("Hola, soy Jarvis TEC su asistente personal. ¿Qué modelo quiere usar?")
   engine.runAndWait()

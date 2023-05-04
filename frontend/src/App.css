@@ -1,0 +1,239 @@
+h1 {
+  position: absolute;
+  top: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.face {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 150px;
+  bottom: 130px;
+  margin: auto;
+  height: 40px;
+  width: 65px;
+  background: black;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  transition: 0.3s;
+}
+
+.head {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 150px;
+  bottom: 130px;
+  margin: auto;
+  height: 75px;
+  width: 100px;
+  z-index: -1;
+  background: white;
+  border-top-left-radius: 60px;
+  border-top-right-radius: 60px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  transition: 0.3s;
+}
+
+.body {
+  position: absolute;
+  top: 60px;
+  left: 0;
+  right: 150px;
+  bottom: 0;
+  margin: auto;
+  height: 120px;
+  width: 115px;
+  background: white;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  border-bottom-left-radius: 100px;
+  border-bottom-right-radius: 100px;
+}
+
+.left-hand {
+  position: absolute;
+  top: 50px;
+  left: -150px;
+  right: 130px;
+  bottom: 0;
+  margin: auto;
+  height: 100px;
+  width: 30px;
+  background: white;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 50px;
+  transition: 0.3s;
+}
+
+.right-hand {
+  position: absolute;
+  top: 50px;
+  left: 130px;
+  right: 150px;
+  bottom: 0;
+  margin: auto;
+  height: 30px;
+  width: 100px;
+  background: white;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 50px;
+  transform: rotateZ(90deg);
+  transition: 0.3s;
+}
+
+.eye1 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 175px;
+  bottom: 150px;
+  margin: auto;
+  height: 10px;
+  width: 15px;
+  background: repeating-linear-gradient(blue 70%, #002966 80%, blue);
+  border-top-left-radius: 50px;
+  border-top-right-radius: 50px;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  animation: blink 2s linear infinite;
+  transition: 0.3s;
+  transform: scale(0) translateY(-20px);
+}
+
+.eye2 {
+  position: absolute;
+  top: 0;
+  left: 25px;
+  right: 150px;
+  bottom: 150px;
+  margin: auto;
+  height: 10px;
+  width: 15px;
+  background: repeating-linear-gradient(blue 70%, #002966 80%, blue);
+  border-top-left-radius: 50px;
+  border-top-right-radius: 50px;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  animation: blink 2s linear infinite;
+  transition: 0.3s;
+  transform: scale(0) translateY(-20px);
+}
+
+@keyframes blink {
+  0% {
+    height: 10px;
+  }
+  25% {
+    height: 6px;
+  }
+  50% {
+    height: 1px;
+  }
+  75% {
+    height: 6px;
+  }
+  100% {
+    heigth: 10px;
+  }
+}
+
+input[type="checkbox"] {
+  display: none;
+}
+
+.switch {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 150px;
+  margin: auto;
+  height: 35px;
+  width: 35px;
+  text-align: center;
+  z-index: 1;
+  border-radius: 50%;
+  background: red;
+  box-shadow: 0px 0px 15px red, inset 0px 0px 15px black;
+  transition: 0.3s;
+  cursor: pointer;
+}
+
+#switch-button:checked ~ label .switch {
+  background: green;
+  box-shadow: 0px 0px 15px green, inset 0px 0px 15px black;
+}
+
+#switch-button:checked ~ .head {
+  bottom: 150px;
+}
+
+#switch-button:checked ~ .face {
+  bottom: 150px;
+}
+
+#switch-button:checked ~ .left-hand {
+  right: 165px;
+}
+
+#switch-button:checked ~ .right-hand {
+  left: 165px;
+}
+
+#switch-button:checked ~ .eye1 {
+  transform: none;
+}
+
+#switch-button:checked ~ .eye2 {
+  transform: none;
+}
+
+#switch-button:checked ~ .bubble-bottom {
+  display: block;
+}
+
+#switch-button:checked ~ .bubble-bottom::before  {
+  display: block;
+}
+
+.bubble-bottom {
+	position: absolute;
+	left: 50%;
+  bottom: 375px;
+	max-width: 30em;
+	background-color: #fff;
+	padding: 1.125em 1.5em;
+	font-size: 1.25em;
+	border-radius: 1rem;
+  box-shadow:	0 0.125rem 0.5rem rgba(0, 0, 0, .3), 0 0.0625rem 0.125rem rgba(0, 0, 0, .2);
+  color: black;
+  display: none;
+}
+
+.bubble-bottom::before {
+	content: '';
+	position: absolute;
+	width: 0;
+	height: 0;
+	bottom: 20%;
+  transform: translateY(50%);
+	left: -0.5em; 
+	border: .75rem solid transparent;
+	border-left: none;
+	border-right-color: #fff;
+	filter: drop-shadow(0 -0.0625rem 0.0625rem rgba(0, 0, 0, .1));
+  display: none;
+}
