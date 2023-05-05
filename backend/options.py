@@ -1,6 +1,6 @@
 # Menú de opciones
-# menu = "Opciones disponibles: \n1 si quiere predecir el precio del bitcoin \n2 si quiere predecir el precio de un automóvil \n3 si quiere que le recomiende películas \n4 si quiere clasificar la calidad de un vino \n5 si quiere predecir la cantidad de inventario de una compañía \n6 si quiere predecir la tarifa de los viajes de taxi \n7 si quiere clasificar si un cliente se va a pasar de compañía celular \n8 si quiere predecir el delay de los viajes de avión \n9 si quiere predecir la masa corporal de un paciente \n10 si quiere predecir el precio de un aguacate. \nPor favor, indique la opción que desea seleccionar diciendo la palabra 'opción' seguida del número correspondiente."
-menu = "Opciones disponibles: "
+menu = "Opciones disponibles: \n1 si quiere predecir el precio del bitcoin \n2 si quiere predecir el precio de un automóvil \n3 si quiere que le recomiende películas \n4 si quiere clasificar la calidad de un vino \n5 si quiere predecir la cantidad de inventario de una compañía \n6 si quiere predecir la tarifa de los viajes de taxi \n7 si quiere clasificar si un cliente se va a pasar de compañía celular \n8 si quiere predecir el delay de los viajes de avión \n9 si quiere predecir la masa corporal de un paciente \n10 si quiere predecir el precio de un aguacate. \nPor favor, indique la opción que desea seleccionar diciendo la palabra 'opción' seguida del número correspondiente."
+# menu = "Opciones disponibles: "
 
 # Selecciona el modelo correspondiente a la opción elegida
 def select_model(option):
