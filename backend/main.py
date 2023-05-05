@@ -3,11 +3,13 @@ from voice_recognition import *
 from face_recognition import capture_and_detect_emotions
 from options import menu
 import pyttsx3
+from flask_cors import CORS
 
 # Definimos el punto de entrada de nuestro programa
-from flask import Flask, request
+from flask import Flask, request, jsonify
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/', methods=['GET'])
 def init():
@@ -17,7 +19,7 @@ def init():
 
 @app.route('/face', methods=['GET', 'POST'])
 def recognize_emotions():
-  return(capture_and_detect_emotions())
+  return jsonify(capture_and_detect_emotions())
   
 @app.route('/voice', methods=['GET', 'POST'])
 def greets():  # Saludamos al usuario
@@ -28,11 +30,11 @@ def greets():  # Saludamos al usuario
   engine.setProperty('voice', 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Speech\Voices\Tokens\TTS_MS_ES-MX_SABINA_11.0')
   engine.setProperty('voice', voices[0].id) 
 
-  engine.say("Hola, soy Jarvis TEC su asistente personal. ¿Qué modelo quiere usar?")
-  engine.runAndWait()
+  # engine.say("Hola, soy Jarvis TEC su asistente personal. ¿Qué modelo quiere usar?")
+  # engine.runAndWait()
 
-  engine.say(menu)
-  engine.runAndWait()
+  # engine.say(menu)
+  # engine.runAndWait()
   # Mostramos el menú de opciones
   # jarvisSay(menu)
 
@@ -47,7 +49,7 @@ def greets():  # Saludamos al usuario
     # Si ha entendido el mensaje, salimos del bucle
     if(response["message_understood"] == True):
       break;
-  return 'OK'
+  return jsonify({'message': response["data"]})
 
 if __name__ == '__main__':
     app.run(debug=True)

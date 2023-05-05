@@ -65,8 +65,8 @@ def precioAutomovil(age, presentPrice, kmsDriven, fuelType, sellerType, transmis
     predicciones = modelo.predict(test_data)
 
     # Imprimir las predicciones
-    print('El precio de venta del automóvil es de:', str(round(predicciones[0][0], 3)), 'dolares')
-    return ('El precio de venta del automóvil es de:', str(round(predicciones[0][0], 3)), 'dolares')
+    print('El precio de venta del automóvil es de: ', str(round(predicciones[0][0], 3)), ' dolares')
+    return ('El precio de venta del automóvil es de: ', str(round(predicciones[0][0], 3)), ' dolares')
 
 # /recomendarPelicula/Tom and Huck/5
 def recomendarPelicula(title, num_recommendations):

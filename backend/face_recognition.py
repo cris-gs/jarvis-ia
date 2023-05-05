@@ -26,17 +26,17 @@ def capture_and_detect_emotions():
     os.remove(temp_img)
 
     if emotions == 'happy':
-        emotions = 'Feliz'
+        emotions = 'Usted se encuentra feliz 😀'
     elif emotions == 'angry':
-        emotions = 'Enojado'
+        emotions = 'Usted se encuentra enojado 😠'
     elif emotions == 'neutral':
-        emotions = 'Neutral'
+        emotions = 'Usted se encuentra neutral 😐'
     elif emotions == 'sad':
-        emotions = 'Triste'
+        emotions = 'Usted se encuentra triste 😢'
     elif emotions == 'surprise':
-        emotions = 'Sorprendido'
+        emotions = 'Usted se encuentra sorprendido 😮'
     else:
-        emotions = 'Desconocido'
+        emotions = 'Sentimiento desconocido 🤨'
 
     return emotions
 
