@@ -5,13 +5,32 @@ from options import select_model
 from ia_models import *
 import pyttsx3
 
-
 #pip install SpeechRecognition
 #pip install pyaudio
+
+# Rutas donde se guardarán los archivos de audio y texto
+audio_path = "D:/crist/TEC/Semestre 7/INTELIGENCIA ARTIFICIAL/Proyecto 2/audios"
+text_path = "D:/crist/TEC/Semestre 7/INTELIGENCIA ARTIFICIAL/Proyecto 2/text"
 
 # Crear objeto de reconocimiento de voz
 r = sr.Recognizer()
 
+# Función para guardar el audio y el texto
+def save_audio_text(audio, text):
+  files = os.listdir(audio_path)
+  number_files = len(files)
+  audio_name = "audio" + str(number_files + 1)
+
+  # Guardar el audio en la computadora
+  os.makedirs(audio_path, exist_ok=True)
+  audio_file = os.path.join(audio_path, audio_name + ".wav")
+  with open(audio_file, "wb") as f:
+    f.write(audio.get_wav_data())
+
+  # Guardar el archivo de texto con el identificador único
+  text_file = os.path.join(text_path, audio_name + ".txt")
+  with open(text_file, "w") as file:
+    file.write(text)
 
 # Función para reconocer el audio y devolver una respuesta
 def recognize_audio():
@@ -24,6 +43,9 @@ def recognize_audio():
   try:
     text = r.recognize_google(audio, language="es-ES") # Convertir el audio en texto usando el servicio de reconocimiento de voz de Google
     print("Ha dicho: " + text)
+
+    # Guarda texto y audio
+    save_audio_text(audio, text);
 
     # Seleccionar la respuesta apropiada basándose en el texto reconocido
     response = select_model(text)
@@ -54,6 +76,10 @@ def recognize_audio():
           try:
             text = r.recognize_google(audio, language="es-ES") # Convertir el audio en texto usando el servicio de reconocimiento de voz de Google
             print("Ha dicho: " + text)
+            
+            # Guarda texto y audio
+            save_audio_text(audio, text);
+
             if(text ==  'uno'):
               text = '1'
             elif(text == 'iess'):
@@ -95,6 +121,9 @@ def recognize_audio():
               print("Ha dicho: " + text)
               text = text.replace(",", "")
               text = text.replace(".", "")
+
+              # Guarda texto y audio
+              save_audio_text(audio, text);
 
               if(text ==  'uno'):
                 text = '1'
@@ -148,6 +177,10 @@ def recognize_audio():
           try:
             text = r.recognize_google(audio, language="es-ES") # Convertir el audio en texto usando el servicio de reconocimiento de voz de Google
             print("Ha dicho: " + text)
+
+            # Guarda texto y audio
+            save_audio_text(audio, text);
+
             if(text ==  'uno'):
               text = '1'
             elif(text ==  'iess'):
@@ -205,6 +238,10 @@ def recognize_audio():
             try:
               text = r.recognize_google(audio, language="es-ES") # Convertir el audio en texto usando el servicio de reconocimiento de voz de Google
               print("Ha dicho: " + text)
+
+              # Guarda texto y audio
+              save_audio_text(audio, text);
+
               if(text ==  'uno'):
                 text = '1'
               elif(text ==  'iess'):
@@ -261,6 +298,10 @@ def recognize_audio():
             try:
               text = r.recognize_google(audio, language="es-ES") # Convertir el audio en texto usando el servicio de reconocimiento de voz de Google
               print("Ha dicho: " + text)
+
+              # Guarda texto y audio
+              save_audio_text(audio, text);
+
               if(text ==  'uno'):
                 text = '1'
               elif(text ==  'iess'):
@@ -311,6 +352,10 @@ def recognize_audio():
             try:
               text = r.recognize_google(audio, language="es-ES") # Convertir el audio en texto usando el servicio de reconocimiento de voz de Google
               print("Ha dicho: " + text)
+
+              # Guarda texto y audio
+              save_audio_text(audio, text);
+
               if(text ==  'uno'):
                 text = '1'
               elif(text ==  'iess'):
@@ -361,6 +406,10 @@ def recognize_audio():
                   try:
                     text = r.recognize_google(audio, language="es-ES") # Convertir el audio en texto usando el servicio de reconocimiento de voz de Google
                     print("Ha dicho: " + text)
+
+                    # Guarda texto y audio
+                    save_audio_text(audio, text);
+
                     if(text ==  'uno'):
                       text = '1'
                     elif(text ==  'iess'):
@@ -402,6 +451,10 @@ def recognize_audio():
                 try:
                   text = r.recognize_google(audio, language="es-ES") # Convertir el audio en texto usando el servicio de reconocimiento de voz de Google
                   print("Ha dicho: " + text)
+
+                  # Guarda texto y audio
+                  save_audio_text(audio, text);
+
                   if(text ==  'uno'):
                     text = '1'
                   elif(text ==  'iess'):
@@ -455,6 +508,10 @@ def recognize_audio():
             try:
               text = r.recognize_google(audio, language="es-ES") # Convertir el audio en texto usando el servicio de reconocimiento de voz de Google
               print("Ha dicho: " + text)
+
+              # Guarda texto y audio
+              save_audio_text(audio, text);
+
               if(text ==  'uno'):
                 text = '1'
               elif(text ==  'iess'):
@@ -508,6 +565,10 @@ def recognize_audio():
             try:
               text = r.recognize_google(audio, language="es-ES") # Convertir el audio en texto usando el servicio de reconocimiento de voz de Google
               print("Ha dicho: " + text)
+
+              # Guarda texto y audio
+              save_audio_text(audio, text);
+
               if(text ==  'uno'):
                 text = '1'
               elif(text ==  'iess'):
@@ -557,6 +618,10 @@ def recognize_audio():
             try:
               text = r.recognize_google(audio, language="es-ES") # Convertir el audio en texto usando el servicio de reconocimiento de voz de Google
               print("Ha dicho: " + text)
+
+              # Guarda texto y audio
+              save_audio_text(audio, text);
+
               if(text ==  'uno'):
                 text = '1'
               elif(text ==  'iess'):

@@ -1,13 +1,15 @@
-#pip install opencv-python
-#pip install deepface==0.0.75
-
 import cv2
 import os
 from deepface import DeepFace
 
+# Ruta donde se guardarán las imágenes
+image_path = "D:\crist\TEC\Semestre 7\INTELIGENCIA ARTIFICIAL\Proyecto 2\images\cristopher"
+
 def capture_and_detect_emotions():
     # Iniciamos la cámara
     cap = cv2.VideoCapture(0)
+
+    print(os.getcwd())
 
     # Tomamos la foto y la guardamos temporalmente
     ret, frame = cap.read()
@@ -22,8 +24,15 @@ def capture_and_detect_emotions():
         os.remove(temp_img)
         return 'Rostro no encontrado'
 
-    # Eliminamos la foto temporal
-    os.remove(temp_img)
+    if os.path.exists(temp_img):
+        # Generar el nombre de archivo de imagen basado en la cantidad de archivos en la carpeta
+        files = os.listdir(image_path)
+        number_files = len(files)
+        image_name = "image" + str(number_files + 1) + ".jpg"
+
+        # Mover la imagen temporal a la ruta de destino con el nombre generado
+        image_destiny = os.path.join(image_path, image_name)
+        os.rename(temp_img, image_destiny)
 
     if emotions == 'happy':
         emotions = 'Usted se encuentra feliz 😀'

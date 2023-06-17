@@ -18,11 +18,11 @@ from unidecode import unidecode
 def precioBitcoin(date):
 
     # Cargar el modelo guardado con pickle
-    with open('./Modelos/modeloPrecioBitcoin.pkl', 'rb') as archivo:
+    with open('./backend/Modelos/modeloPrecioBitcoin.pkl', 'rb') as archivo:
         modelo = pickle.load(archivo)
 
     # Cargar los datos de entrenamiento
-    data = pd.read_csv('./Data/bitcoin_price_Training - bitcoin_price.2013Apr-2017Aug.csv.csv')
+    data = pd.read_csv('./backend/Data/bitcoin_price_Training - bitcoin_price.2013Apr-2017Aug.csv.csv')
     data['Date'] = pd.to_datetime(data['Date'])
     data.set_index('Date', inplace=True)
     try:
@@ -42,7 +42,7 @@ def precioBitcoin(date):
 def precioAutomovil(age, presentPrice, kmsDriven, fuelType, sellerType, transmission, owner):
 
     # Cargar el modelo guardado con pickle
-    with open('./Modelos/modeloPrecioAutomovil.pkl', 'rb') as archivo:
+    with open('./backend/Modelos/modeloPrecioAutomovil.pkl', 'rb') as archivo:
         modelo = pickle.load(archivo)
 
     # Codificar las variables categóricas (tipo de combustible, tipo de vendedor y transmisión)
@@ -71,8 +71,8 @@ def precioAutomovil(age, presentPrice, kmsDriven, fuelType, sellerType, transmis
 # /recomendarPelicula/Tom and Huck/5
 def recomendarPelicula(title, num_recommendations):
 
-    movies = pd.read_csv('./Data/movies.csv')
-    ratings = pd.read_csv('./Data/ratings.csv')
+    movies = pd.read_csv('./backend/Data/movies.csv')
+    ratings = pd.read_csv('./backend/Data/ratings.csv')
     data = pd.merge(movies, ratings, on='movieId')
 
     # Seleccionar las columnas necesarias del dataframe
@@ -127,7 +127,7 @@ def clienteCompañiaCelular(gender, seniorCitizen, partner, dependents, tenure, 
                            streamingTV, streamingMovies, contract, paperlessBilling, paymentMethod, monthlyCharges, totalCharges):
 
     # Cargar el modelo guardado con pickle
-    with open('./Modelos/modeloClienteCompañiaCelular.pkl', 'rb') as archivo:
+    with open('./backend/Modelos/modeloClienteCompañiaCelular.pkl', 'rb') as archivo:
         modelo = pickle.load(archivo)
     
     # Crear un nuevo DataFrame
@@ -166,7 +166,7 @@ def clienteCompañiaCelular(gender, seniorCitizen, partner, dependents, tenure, 
 #/masaCorporal/1.0/3/50.0/100.0/20.0/50.0/40.0/30.0/20.0/15.0/10.0/15.0/10.0/8.0
 def masaCorporal(density, age, weight, height, neck, chest, abdomen, hip, thigh, knee, ankle, biceps, forearm, wrist):
     # Cargar el modelo guardado con pickle
-    with open('./Modelos/modeloMasaCorporal.pkl', 'rb') as archivo:
+    with open('./backend/Modelos/modeloMasaCorporal.pkl', 'rb') as archivo:
         modelo = pickle.load(archivo)
 
     # Crear un nuevo DataFrame
@@ -198,7 +198,7 @@ def masaCorporal(density, age, weight, height, neck, chest, abdomen, hip, thigh,
 def calidadVino(fixed, volatile, citric, residualSugar, chlorides, freeSulfurDioxide, 
                 totalSulfurDioxide, density, pH, sulphates, alcohol, red, white):
     # Cargar el modelo guardado con pickle
-    with open('./Modelos/modeloCalidadVino.pkl', 'rb') as archivo:
+    with open('./backend/Modelos/modeloCalidadVino.pkl', 'rb') as archivo:
         modelo = pickle.load(archivo)
 
     # Crear un nuevo DataFrame
@@ -228,7 +228,7 @@ def calidadVino(fixed, volatile, citric, residualSugar, chlorides, freeSulfurDio
 #/cantidadInventario/Aliss/3/5/2024
 def cantidadInventario(store, item, month, year):
     # Cargar el modelo guardado con pickle
-    with open('./Modelos/modeloCantidadInventario.pkl', 'rb') as archivo:
+    with open('./backend/Modelos/modeloCantidadInventario.pkl', 'rb') as archivo:
         modelo = pickle.load(archivo)
 
     # Crear un nuevo DataFrame
@@ -249,7 +249,7 @@ def cantidadInventario(store, item, month, year):
 #/tarifaTaxi/1.0/0.5/3.2/2/0.0/Tarjeta de crédito/estándar/0.5/0.3
 def tarifaTaxi(driver, mtaTax, distante, numPassenger, tollAmount, paymentMethod, rateCode, extraCharges, improvementCharge):
     # Cargar el modelo guardado con pickle
-    with open('./Modelos/modeloTarifaTaxi.pkl', 'rb') as archivo:
+    with open('./backend/Modelos/modeloTarifaTaxi.pkl', 'rb') as archivo:
         modelo = pickle.load(archivo)
 
     # Crear un nuevo DataFrame
@@ -276,7 +276,7 @@ def tarifaTaxi(driver, mtaTax, distante, numPassenger, tollAmount, paymentMethod
 def delayViajeAvion(depTime, crsDepTime, arrTime, crsArrTime, uniqueCarrier, actualElapsedTime, crsElapsedTime, airTime, arrDelay, 
                     depDelay, distance, carrierDelay, weatherDelay, nasDelay, securityDelay):
     # Cargar el modelo guardado con pickle
-    with open('./Modelos/modeloViajeAvion.pkl', 'rb') as archivo:
+    with open('./backend/Modelos/modeloViajeAvion.pkl', 'rb') as archivo:
         modelo = pickle.load(archivo)
 
     # * WN: Southwest Airlines, XE: ExpressJet Airlines, YV: Mesa Airlines, OH: PSA Airlines, OO: SkyWest Airlines,
@@ -313,7 +313,7 @@ def delayViajeAvion(depTime, crsDepTime, arrTime, crsArrTime, uniqueCarrier, act
 #/precioAguacate/100.9/60.2/30.6/10.1/150.6/100.4/50.2/0.0/2/2023/San Diego
 def precioAguacate(totalVolume, d4046, d4225, d4770, totalBags, smallBags, largeBags, xLargeBags, dtype, year, region):
     # Cargar el modelo guardado con pickle
-    with open('./Modelos/modeloPrecioAguacate.pkl', 'rb') as archivo:
+    with open('./backend/Modelos/modeloPrecioAguacate.pkl', 'rb') as archivo:
         modelo = pickle.load(archivo)
 
     # Crear un nuevo DataFrame
