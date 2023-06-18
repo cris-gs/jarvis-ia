@@ -65,6 +65,7 @@ const App = () => {
       .then(response => response.json())
       .then(data => {
         console.log(data);
+        jarvisSay(data);
         setJarvisResponse(data);
         setFacialRecognitionActive(false);
       })
