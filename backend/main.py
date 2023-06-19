@@ -1,6 +1,6 @@
 # from voice import *
 from voice_recognition import *
-from face_recognition import capture_and_detect_emotions
+from face_recognition import facial_recognition
 from options import menu
 import pyttsx3
 from flask_cors import CORS
@@ -19,7 +19,7 @@ def init():
 
 @app.route('/face', methods=['GET', 'POST'])
 def recognize_emotions():
-  return jsonify(capture_and_detect_emotions())
+  return jsonify(facial_recognition())
   
 @app.route('/voice', methods=['GET', 'POST'])
 def greets():  # Saludamos al usuario
