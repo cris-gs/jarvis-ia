@@ -191,8 +191,8 @@ def masaCorporal(density, age, weight, height, neck, chest, abdomen, hip, thigh,
     predicciones = modelo.predict(test_data)
 
     # Imprimir las predicciones
-    print('La masa corporal del paciente es:', str(round(predicciones[0], 3)))
-    return 'La masa corporal del paciente es:', str(round(predicciones[0], 3))
+    print('La masa corporal del paciente es: ', str(round(predicciones[0], 3)))
+    return 'La masa corporal del paciente es: ', str(round(predicciones[0], 3))
 
 #/calidadVino/8.9/0.3/0.38/2.8/0.10/31/69/0.998/3.25/0.86/12.8/1/0
 def calidadVino(fixed, volatile, citric, residualSugar, chlorides, freeSulfurDioxide, 
@@ -222,8 +222,8 @@ def calidadVino(fixed, volatile, citric, residualSugar, chlorides, freeSulfurDio
     predicciones = modelo.predict(test_data)
 
     # Imprimir las predicciones
-    print('La calidad del vino es de:', str(predicciones[0]))
-    return ('La calidad del vino es de:', str(predicciones[0]))
+    print('La calidad del vino es de: ', str(predicciones[0]))
+    return ('La calidad del vino es de: ', str(predicciones[0]))
 
 #/cantidadInventario/Aliss/3/5/2024
 def cantidadInventario(store, item, month, year):
@@ -269,8 +269,8 @@ def tarifaTaxi(driver, mtaTax, distante, numPassenger, tollAmount, paymentMethod
     predicciones = modelo.predict(test_data)
     predicciones =  (predicciones * 10) * 0.012
     # Imprimir las predicciones
-    print('La tarifa del viaje es de:', str(round(predicciones[0], 3)), 'dolares')
-    return ('La tarifa del viaje es de:', str(round(predicciones[0], 3)), 'dolares')
+    print('La tarifa del viaje es de: ', str(round(predicciones[0], 3)), 'dolares')
+    return ('La tarifa del viaje es de: ', str(round(predicciones[0], 3)), 'dolares')
 
 #/delayViajeAvion/1853.0/520/1439.0/1004/UA/172.0/84.0/235.0/48.0/22.0/1230/22.0/0/2.0/11.0
 def delayViajeAvion(depTime, crsDepTime, arrTime, crsArrTime, uniqueCarrier, actualElapsedTime, crsElapsedTime, airTime, arrDelay, 
@@ -307,8 +307,8 @@ def delayViajeAvion(depTime, crsDepTime, arrTime, crsArrTime, uniqueCarrier, act
     predicciones = modelo.predict(test_data)
 
     # Imprimir las predicciones
-    print('El retraso del vuelo es de:', str(round(predicciones[0]*60, 3)), 'Segundos')
-    return ('El retraso del vuelo es de:', str(round(predicciones[0]*60, 3)), 'Segundos')
+    print('El retraso del vuelo es de: ', str(round(predicciones[0]*60, 3)), ' segundos')
+    return ('El retraso del vuelo es de: ', str(round(predicciones[0]*60, 3)), ' segundos')
 
 #/precioAguacate/100.9/60.2/30.6/10.1/150.6/100.4/50.2/0.0/2/2023/San Diego
 def precioAguacate(totalVolume, d4046, d4225, d4770, totalBags, smallBags, largeBags, xLargeBags, dtype, year, region):
@@ -335,8 +335,8 @@ def precioAguacate(totalVolume, d4046, d4225, d4770, totalBags, smallBags, large
     predicciones = modelo.predict(test_data)
 
     # Imprimir las predicciones
-    print('El precio del aguacate es de:', str(round(predicciones[0],3)), 'dolares')
-    return ('El precio del aguacate es de:', str(round(predicciones[0],3)), 'dolares')
+    print('El precio del aguacate es de: ', str(round(predicciones[0],3)), 'dolares')
+    return ('El precio del aguacate es de: ', str(round(predicciones[0],3)), 'dolares')
 
 
 # print('----------------------------------')
