@@ -1,9 +1,7 @@
 import os
-import sys
 import pytube
 import cv2
 from Mask_RCNN.samples.coco import coco
-# from Mask_RCNN.mrcnn import model as modellib
 from Mask_RCNN.mrcnn import model as modellib
 from tensorflow.compat.v1 import ConfigProto
 from tensorflow.compat.v1 import InteractiveSession

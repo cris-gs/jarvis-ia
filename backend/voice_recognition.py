@@ -10,8 +10,8 @@ from audio_to_text import process_audio
 #pip install pyaudio
 
 # Rutas donde se guardarán los archivos de audio y texto
-audio_path = "D:/crist/TEC/Semestre 7/INTELIGENCIA ARTIFICIAL/Proyecto 2/audios"
-text_path = "D:/crist/TEC/Semestre 7/INTELIGENCIA ARTIFICIAL/Proyecto 2/text"
+audio_path = "D:/crist/TEC/Semestre 7/INTELIGENCIA ARTIFICIAL/Proyecto 2/audios/"
+text_path = "D:/crist/TEC/Semestre 7/INTELIGENCIA ARTIFICIAL/Proyecto 2/text/"
 
 # Crear objeto de reconocimiento de voz
 r = sr.Recognizer()
