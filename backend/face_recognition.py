@@ -9,7 +9,7 @@ import tensorflow_hub as hub
 
 # Desinstalar 
 # pip uninstall tensorflow tensorflow-hub tensorflow-estimator tensorflow-io-gcs-filesystem absl-py astunparse gast google-auth google-auth-oauthlib google-pasta grpcio h5py keras-preprocessing numpy opt-einsum protobuf tensorboard tensorboard-data-server tensorboard-plugin-wit tensorflow-intel tensorflow-io-gcs-filesystem termcolor tf-estimator-nightly typing-extensions wrapt
-#pip uninstall tensorflow tensorflow-estimator tensorflow-intel tensorflow-io-gcs-filesystem absl-py astunparse gast google-auth google-auth-oauthlib google-pasta grpcio h5py keras-preprocessing numpy opt-einsum protobuf tensorboard tensorboard-data-server tensorboard-plugin-wit tensorflow-intel tensorflow-io-gcs-filesystem termcolor tf-estimator-nightly typing-extensions wrapt
+
 # Instalar
 # pip install tensorflow tensorflow-hub
 
@@ -82,4 +82,4 @@ def facial_recognition():
     os.remove(temp_img)
     return "Rostro no reconocido"
 
-facial_recognition()
+#facial_recognition()

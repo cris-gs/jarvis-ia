@@ -1,12 +1,15 @@
 import { useState } from "react";
 import "./App.css";
+import { Modal } from "./modal";
 
 const App = () => {
   const [isChecked, setIsChecked] = useState(false); // Estado para almacenar si el botón está chequeado
   const [jarvisResponse, setJarvisResponse] = useState(null);
   const [jarvisActive, setJarvisActive] = useState(false);
   const [facialRecognitionActive, setFacialRecognitionActive] = useState(false);
+  const [videoAnalysisActive, setvideoAnalysisActive] = useState(false);
   const [intro, setIntro] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const jarvisSay = (message) => {
     return new Promise((resolve, reject) => {
@@ -75,6 +78,39 @@ const App = () => {
       .catch(error => console.error(error));
   }
 
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    const videoUrl = localStorage.getItem('videoUrl')
+    if(videoUrl !== ''){
+      setvideoAnalysisActive(true);
+      setIsChecked(true);
+      setJarvisResponse("Escaneando video...");
+      fetch(`http://127.0.0.1:5000/video?video_url=${encodeURIComponent(videoUrl)}`)
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+          if(data.length > 1){
+            const responseMessage = `${data[0]} y ${data[1]}`;
+            setJarvisResponse(responseMessage);
+            jarvisSay(responseMessage);
+          }else if(data.length === 0){
+            setJarvisResponse('No se han encontrado tijeras ni cuchillos');
+            jarvisSay('No se han encontrado tijeras ni cuchillos');
+          }else{
+            setJarvisResponse(data[0]);
+            jarvisSay(data[0]);
+          }   
+          setvideoAnalysisActive(false);
+        })
+        .catch(error => console.error(error));
+    }
+    localStorage.setItem('videoUrl', '');
+  };
+
   return (
     <main>
       <div className="robot">
@@ -105,6 +141,10 @@ const App = () => {
       <button className="button" onClick={handleFacialRecognition} disabled={jarvisActive || facialRecognitionActive ? true : false}>
         <img src="/src/assets/reconocimiento-facial.png" alt="Texto alternativo" />
       </button>
+      <button className="button-analysis" onClick={handleOpenModal} disabled={jarvisActive || videoAnalysisActive ? true : false}>
+        <img src="/src/assets/analisis-video.png" alt="Texto alternativo"/>
+      </button>
+      <Modal isOpen={isModalOpen} onClose={handleCloseModal} />
     </main>
   );
 };

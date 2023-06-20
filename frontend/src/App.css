@@ -271,14 +271,120 @@ input[type="checkbox"] {
   height: auto;
 }
 
+/* ---------button-analysis----------- */
+.button-analysis {
+  position: absolute;
+  top: 80%;
+  left: 4.5%;
+  border: none;
+  background-color: #c4302b;
+  cursor: pointer;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+}
+
+/* Efecto de hover para el botón */
+.button-analysis:hover {
+  background-color: #8a1511;
+}
+
+/* Animación al hacer clic en el botón */
+.button-analysis:active {
+  transform: translateY(2px);
+  box-shadow: 0 0 5px rgba(0,0,0,0.3);
+}
+
+.button-analysis:disabled,
+#switch-button:disabled {
+  background-color: grey;
+}
+
+.button-analysis img {
+  width: 100%;
+  height: auto;
+}
+
+/* ---------modal----------- */
+.modal{
+  position: absolute;
+  top: 60%;
+  left: 3%;
+  background-color: rgb(138, 132, 132);
+  border-radius: 5%;
+}
+.modal-content{
+  margin: 10px;
+  gap: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.modal-content h2{
+  margin: 0;
+}
+.modal-content input{
+  border-radius: 5px;
+  border-style: none;
+  height: 30px;
+  width: 100%;
+}
+.modal-buttons{
+  display: flex;
+  gap: 5px;
+}
+.save-button{
+  background-color: rgb(11, 116, 11);
+}
+.save-button:hover{
+  background-color: rgb(7, 90, 7);
+}
+
+.close-button{
+  background-color: #c4302b;
+}
+.close-button:hover{
+  background-color: #8a1511;
+}
+
+@media (max-width: 1400px) {
+  .button {
+    left: 90%
+  }
+  .button-analysis {
+    left: 2.5%
+  }
+}
+
 @media (max-width: 1024px) {
   .button {
     left: 80%
+  }
+  .button-analysis {
+    left: 7%
+  }
+}
+
+@media (max-height: 688px) {
+  .bubble-bottom{
+    bottom: 310px;
+  }
+
+  .modal{
+    position: absolute;
+    top: 50%;
+    left: 3%;
+    background-color: rgb(138, 132, 132);
+    border-radius: 5%;
   }
 }
 
 @media (max-width: 500px) {
   .button {
     left: 70%
+  }
+  .button-analysis {
+    left: 7%
   }
 }

@@ -1,2 +1,1 @@
-if key == ord('q'):
-    #     break
+pip install -r requirements.txt

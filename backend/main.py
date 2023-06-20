@@ -1,6 +1,7 @@
 # from voice import *
 from voice_recognition import *
 from face_recognition import facial_recognition
+from video_analysis import video_scan
 from options import menu
 import pyttsx3
 from flask_cors import CORS
@@ -16,6 +17,11 @@ def init():
     if request.path == '/':
         return 'Hola'
     return 'No encontrado'
+
+@app.route('/video', methods=['GET', 'POST'])
+def recognize_knives():
+  video_url = request.args.get('video_url')
+  return jsonify(video_scan(video_url))
 
 @app.route('/face', methods=['GET', 'POST'])
 def recognize_emotions():
@@ -64,3 +70,6 @@ if __name__ == '__main__':
 #Opción 8 -> 1853.0/520/1439.0/1234/fl/172.0/84.0/235.0/48.0/22.0/1230/22.0/0/2.0/11.0
 #Opción 9 -> 1.0/3/50.0/100.0/20.0/50.0/40.0/30.0/20.0/15.0/10.0/15.0/10.0/8.0
 #Opción 10 -> 100.9/60.2/30.6/10.1/150.6/100.4/50.2/0.0/2/2023/San Diego
+
+#video con armas -> https://www.youtube.com/shorts/LdDtPuY89T8 
+#vide corto sin armas -> https://www.youtube.com/watch?v=c9OlEvOl53s
