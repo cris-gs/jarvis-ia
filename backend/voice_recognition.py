@@ -4,6 +4,7 @@ from voice_recognition import *
 from options import select_model
 from ia_models import *
 import pyttsx3
+from audio_to_text import process_audio
 
 #pip install SpeechRecognition
 #pip install pyaudio
@@ -15,8 +16,8 @@ text_path = "C:/Users/Personal/Desktop/TEC/Semestre 7/Inteligencia Artificial/Pr
 # Crear objeto de reconocimiento de voz
 r = sr.Recognizer()
 
-# Función para guardar el audio y el texto
-def save_audio_text(audio, text):
+# Función para guardar el audio
+def save_audio(audio):
   files = os.listdir(audio_path)
   number_files = len(files)
   audio_name = "audio" + str(number_files + 1)
@@ -26,6 +27,14 @@ def save_audio_text(audio, text):
   audio_file = os.path.join(audio_path, audio_name + ".wav")
   with open(audio_file, "wb") as f:
     f.write(audio.get_wav_data())
+
+  return audio_name
+
+# Función para guardar el texto
+def save_text(text):
+  files = os.listdir(text_path)
+  number_files = len(files)
+  audio_name = "audio" + str(number_files + 1)
 
   # Guardar el archivo de texto con el identificador único
   text_file = os.path.join(text_path, audio_name + ".txt")
@@ -41,11 +50,15 @@ def recognize_audio():
   print("Dejé de grabar")
 
   try:
-    text = r.recognize_google(audio, language="es-ES") # Convertir el audio en texto usando el servicio de reconocimiento de voz de Google
+    # text = r.recognize_google(audio, language="es-ES") # Convertir el audio en texto usando el servicio de reconocimiento de voz de Google
+    audio_name = save_audio(audio);
+    new_audio_path = audio_path + audio_name + ".wav"
+    text = process_audio(new_audio_path)
+    
     print("Ha dicho: " + text)
 
     # Guarda texto y audio
-    save_audio_text(audio, text);
+    save_text(text);
 
     # Seleccionar la respuesta apropiada basándose en el texto reconocido
     response = select_model(text)
@@ -74,11 +87,15 @@ def recognize_audio():
           print("Dejé de grabar")
 
           try:
-            text = r.recognize_google(audio, language="es-ES") # Convertir el audio en texto usando el servicio de reconocimiento de voz de Google
+            # text = r.recognize_google(audio, language="es-ES") # Convertir el audio en texto usando el servicio de reconocimiento de voz de Google
+       
+            audio_name = save_audio(audio);
+            new_audio_path = audio_path + audio_name + ".wav"
+            text = process_audio(new_audio_path)
             print("Ha dicho: " + text)
             
             # Guarda texto y audio
-            save_audio_text(audio, text);
+            save_text(text);
 
             if(text ==  'uno'):
               text = '1'
@@ -117,13 +134,17 @@ def recognize_audio():
             print("Dejé de grabar")
 
             try:
-              text = r.recognize_google(audio, language="es-ES") # Convertir el audio en texto usando el servicio de reconocimiento de voz de Google
+              # text = r.recognize_google(audio, language="es-ES") # Convertir el audio en texto usando el servicio de reconocimiento de voz de Google
+         
+              audio_name = save_audio(audio);
+              new_audio_path = audio_path + audio_name + ".wav"
+              text = process_audio(new_audio_path)
               print("Ha dicho: " + text)
               text = text.replace(",", "")
               text = text.replace(".", "")
 
               # Guarda texto y audio
-              save_audio_text(audio, text);
+              save_text(text);
 
               if(text ==  'uno'):
                 text = '1'
@@ -175,11 +196,15 @@ def recognize_audio():
           print("Dejé de grabar")
 
           try:
-            text = r.recognize_google(audio, language="es-ES") # Convertir el audio en texto usando el servicio de reconocimiento de voz de Google
+            # text = r.recognize_google(audio, language="es-ES") # Convertir el audio en texto usando el servicio de reconocimiento de voz de Google
+       
+            audio_name = save_audio(audio);
+            new_audio_path = audio_path + audio_name + ".wav"
+            text = process_audio(new_audio_path)
             print("Ha dicho: " + text)
 
             # Guarda texto y audio
-            save_audio_text(audio, text);
+            save_text(text);
 
             if(text ==  'uno'):
               text = '1'
@@ -236,11 +261,15 @@ def recognize_audio():
             print("Dejé de grabar")
 
             try:
-              text = r.recognize_google(audio, language="es-ES") # Convertir el audio en texto usando el servicio de reconocimiento de voz de Google
+              # text = r.recognize_google(audio, language="es-ES") # Convertir el audio en texto usando el servicio de reconocimiento de voz de Google
+         
+              audio_name = save_audio(audio);
+              new_audio_path = audio_path + audio_name + ".wav"
+              text = process_audio(new_audio_path)
               print("Ha dicho: " + text)
 
               # Guarda texto y audio
-              save_audio_text(audio, text);
+              save_text(text);
 
               if(text ==  'uno'):
                 text = '1'
@@ -296,11 +325,15 @@ def recognize_audio():
             print("Dejé de grabar")
 
             try:
-              text = r.recognize_google(audio, language="es-ES") # Convertir el audio en texto usando el servicio de reconocimiento de voz de Google
+              # text = r.recognize_google(audio, language="es-ES") # Convertir el audio en texto usando el servicio de reconocimiento de voz de Google
+         
+              audio_name = save_audio(audio);
+              new_audio_path = audio_path + audio_name + ".wav"
+              text = process_audio(new_audio_path)
               print("Ha dicho: " + text)
 
               # Guarda texto y audio
-              save_audio_text(audio, text);
+              save_text(text);
 
               if(text ==  'uno'):
                 text = '1'
@@ -350,11 +383,15 @@ def recognize_audio():
             print("Dejé de grabar")
 
             try:
-              text = r.recognize_google(audio, language="es-ES") # Convertir el audio en texto usando el servicio de reconocimiento de voz de Google
+              # text = r.recognize_google(audio, language="es-ES") # Convertir el audio en texto usando el servicio de reconocimiento de voz de Google
+         
+              audio_name = save_audio(audio);
+              new_audio_path = audio_path + audio_name + ".wav"
+              text = process_audio(new_audio_path)
               print("Ha dicho: " + text)
 
               # Guarda texto y audio
-              save_audio_text(audio, text);
+              save_text(text);
 
               if(text ==  'uno'):
                 text = '1'
@@ -404,11 +441,15 @@ def recognize_audio():
                     audio = r.listen(source)
                   print("Dejé de grabar")
                   try:
-                    text = r.recognize_google(audio, language="es-ES") # Convertir el audio en texto usando el servicio de reconocimiento de voz de Google
+                    # text = r.recognize_google(audio, language="es-ES") # Convertir el audio en texto usando el servicio de reconocimiento de voz de Google
+               
+                    audio_name = save_audio(audio);
+                    new_audio_path = audio_path + audio_name + ".wav"
+                    text = process_audio(new_audio_path)
                     print("Ha dicho: " + text)
 
                     # Guarda texto y audio
-                    save_audio_text(audio, text);
+                    save_text(text);
 
                     if(text ==  'uno'):
                       text = '1'
@@ -449,11 +490,15 @@ def recognize_audio():
                   audio = r.listen(source)
                 print("Dejé de grabar")
                 try:
-                  text = r.recognize_google(audio, language="es-ES") # Convertir el audio en texto usando el servicio de reconocimiento de voz de Google
+                  # text = r.recognize_google(audio, language="es-ES") # Convertir el audio en texto usando el servicio de reconocimiento de voz de Google
+             
+                  audio_name = save_audio(audio);
+                  new_audio_path = audio_path + audio_name + ".wav"
+                  text = process_audio(new_audio_path)
                   print("Ha dicho: " + text)
 
                   # Guarda texto y audio
-                  save_audio_text(audio, text);
+                  save_text(text);
 
                   if(text ==  'uno'):
                     text = '1'
@@ -506,11 +551,15 @@ def recognize_audio():
             print("Dejé de grabar")
 
             try:
-              text = r.recognize_google(audio, language="es-ES") # Convertir el audio en texto usando el servicio de reconocimiento de voz de Google
+              # text = r.recognize_google(audio, language="es-ES") # Convertir el audio en texto usando el servicio de reconocimiento de voz de Google
+         
+              audio_name = save_audio(audio);
+              new_audio_path = audio_path + audio_name + ".wav"
+              text = process_audio(new_audio_path)
               print("Ha dicho: " + text)
 
               # Guarda texto y audio
-              save_audio_text(audio, text);
+              save_text(text);
 
               if(text ==  'uno'):
                 text = '1'
@@ -563,11 +612,15 @@ def recognize_audio():
             print("Dejé de grabar")
 
             try:
-              text = r.recognize_google(audio, language="es-ES") # Convertir el audio en texto usando el servicio de reconocimiento de voz de Google
+              # text = r.recognize_google(audio, language="es-ES") # Convertir el audio en texto usando el servicio de reconocimiento de voz de Google
+         
+              audio_name = save_audio(audio);
+              new_audio_path = audio_path + audio_name + ".wav"
+              text = process_audio(new_audio_path)
               print("Ha dicho: " + text)
 
               # Guarda texto y audio
-              save_audio_text(audio, text);
+              save_text(text);
 
               if(text ==  'uno'):
                 text = '1'
@@ -616,11 +669,15 @@ def recognize_audio():
             print("Dejé de grabar")
 
             try:
-              text = r.recognize_google(audio, language="es-ES") # Convertir el audio en texto usando el servicio de reconocimiento de voz de Google
+              # text = r.recognize_google(audio, language="es-ES") # Convertir el audio en texto usando el servicio de reconocimiento de voz de Google
+         
+              audio_name = save_audio(audio);
+              new_audio_path = audio_path + audio_name + ".wav"
+              text = process_audio(new_audio_path)
               print("Ha dicho: " + text)
 
               # Guarda texto y audio
-              save_audio_text(audio, text);
+              save_text(text);
 
               if(text ==  'uno'):
                 text = '1'
