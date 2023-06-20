@@ -5,41 +5,49 @@ from options import select_model
 from ia_models import *
 import pyttsx3
 from audio_to_text import process_audio
+import tempfile
 
 #pip install SpeechRecognition
 #pip install pyaudio
 
 # Rutas donde se guardarán los archivos de audio y texto
-audio_path = "D:/crist/TEC/Semestre 7/INTELIGENCIA ARTIFICIAL/Proyecto 2/audios/"
-text_path = "D:/crist/TEC/Semestre 7/INTELIGENCIA ARTIFICIAL/Proyecto 2/text/"
+# audio_path = "C:/Users/Personal/Desktop/TEC/Semestre 7/Inteligencia Artificial/Proyecto 2/audios/"
+# text_path = "C:/Users/Personal/Desktop/TEC/Semestre 7/Inteligencia Artificial/Proyecto 2/texts/"
 
 # Crear objeto de reconocimiento de voz
 r = sr.Recognizer()
 
+# Función para guardar el audio temporalmente
+def save_audio_temporarily(audio):
+  with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as temp_audio:
+    temp_audio.write(audio.get_wav_data())
+    temp_audio_path = temp_audio.name
+  return temp_audio_path
+
 # Función para guardar el audio
-def save_audio(audio):
-  files = os.listdir(audio_path)
-  number_files = len(files)
-  audio_name = "audio" + str(number_files + 1)
+# def save_audio_temporarily(audio):
+#   files = os.listdir(audio_path)
+#   number_files = len(files)
+#   audio_name  = "audio" + str(number_files + 1)
 
-  # Guardar el audio en la computadora
-  os.makedirs(audio_path, exist_ok=True)
-  audio_file = os.path.join(audio_path, audio_name + ".wav")
-  with open(audio_file, "wb") as f:
-    f.write(audio.get_wav_data())
+#   # Guardar el audio en la computadora
+#   os.makedirs(audio_path, exist_ok=True)
+#   audio_file = os.path.join(audio_path, audio_name + ".wav")
+#   with open(audio_file, "wb") as f:
+#     f.write(audio.get_wav_data())
 
-  return audio_name
+#   return audio_name
 
 # Función para guardar el texto
-def save_text(text):
-  files = os.listdir(text_path)
-  number_files = len(files)
-  audio_name = "audio" + str(number_files + 1)
+# def save_text(text):
+#   files = os.listdir(text_path)
+#   number_files = len(files)
+#   audio_name = "audio" + str(number_files + 1)
 
-  # Guardar el archivo de texto con el identificador único
-  text_file = os.path.join(text_path, audio_name + ".txt")
-  with open(text_file, "w") as file:
-    file.write(text)
+#   # Guardar el archivo de texto con el identificador único
+#   text_file = os.path.join(text_path, audio_name + ".txt")
+#   with open(text_file, "w") as file:
+#     file.write(text)
 
 # Función para reconocer el audio y devolver una respuesta
 def recognize_audio():
@@ -51,14 +59,13 @@ def recognize_audio():
 
   try:
     # text = r.recognize_google(audio, language="es-ES") # Convertir el audio en texto usando el servicio de reconocimiento de voz de Google
-    audio_name = save_audio(audio);
-    new_audio_path = audio_path + audio_name + ".wav"
-    text = process_audio(new_audio_path)
+    temp_audio_path  = save_audio_temporarily(audio)
+    text = process_audio(temp_audio_path)
     
     print("Ha dicho: " + text)
 
     # Guarda texto y audio
-    save_text(text);
+    # save_text(text);
 
     # Seleccionar la respuesta apropiada basándose en el texto reconocido
     response = select_model(text)
@@ -68,7 +75,7 @@ def recognize_audio():
 
     # Seleccionar una voz diferente (en este caso, la primera de la lista)
     engine.setProperty('voice', 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Speech\Voices\Tokens\TTS_MS_ES-MX_SABINA_11.0')
-    engine.setProperty('voice', voices[2].id) 
+    engine.setProperty('voice', voices[0].id)
 
     if (response == "Lo siento, no he entendido su respuesta. Por favor, seleccione una opción válida."):
       return {"data": response, "message_understood": False}
@@ -89,13 +96,13 @@ def recognize_audio():
           try:
             # text = r.recognize_google(audio, language="es-ES") # Convertir el audio en texto usando el servicio de reconocimiento de voz de Google
        
-            audio_name = save_audio(audio);
-            new_audio_path = audio_path + audio_name + ".wav"
-            text = process_audio(new_audio_path)
+            temp_audio_path  = save_audio_temporarily(audio)
+      
+            text = process_audio(temp_audio_path)
             print("Ha dicho: " + text)
             
             # Guarda texto y audio
-            save_text(text);
+            # save_text(text);
 
             if(text ==  'uno'):
               text = '1'
@@ -136,15 +143,15 @@ def recognize_audio():
             try:
               # text = r.recognize_google(audio, language="es-ES") # Convertir el audio en texto usando el servicio de reconocimiento de voz de Google
          
-              audio_name = save_audio(audio);
-              new_audio_path = audio_path + audio_name + ".wav"
-              text = process_audio(new_audio_path)
+              temp_audio_path  = save_audio_temporarily(audio)
+        
+              text = process_audio(temp_audio_path)
               print("Ha dicho: " + text)
               text = text.replace(",", "")
               text = text.replace(".", "")
 
               # Guarda texto y audio
-              save_text(text);
+              # save_text(text);
 
               if(text ==  'uno'):
                 text = '1'
@@ -198,13 +205,13 @@ def recognize_audio():
           try:
             # text = r.recognize_google(audio, language="es-ES") # Convertir el audio en texto usando el servicio de reconocimiento de voz de Google
        
-            audio_name = save_audio(audio);
-            new_audio_path = audio_path + audio_name + ".wav"
-            text = process_audio(new_audio_path)
+            temp_audio_path  = save_audio_temporarily(audio)
+      
+            text = process_audio(temp_audio_path)
             print("Ha dicho: " + text)
 
             # Guarda texto y audio
-            save_text(text);
+            # save_text(text);
 
             if(text ==  'uno'):
               text = '1'
@@ -263,13 +270,13 @@ def recognize_audio():
             try:
               # text = r.recognize_google(audio, language="es-ES") # Convertir el audio en texto usando el servicio de reconocimiento de voz de Google
          
-              audio_name = save_audio(audio);
-              new_audio_path = audio_path + audio_name + ".wav"
-              text = process_audio(new_audio_path)
+              temp_audio_path  = save_audio_temporarily(audio)
+        
+              text = process_audio(temp_audio_path)
               print("Ha dicho: " + text)
 
               # Guarda texto y audio
-              save_text(text);
+              # save_text(text);
 
               if(text ==  'uno'):
                 text = '1'
@@ -327,13 +334,13 @@ def recognize_audio():
             try:
               # text = r.recognize_google(audio, language="es-ES") # Convertir el audio en texto usando el servicio de reconocimiento de voz de Google
          
-              audio_name = save_audio(audio);
-              new_audio_path = audio_path + audio_name + ".wav"
-              text = process_audio(new_audio_path)
+              temp_audio_path  = save_audio_temporarily(audio)
+        
+              text = process_audio(temp_audio_path)
               print("Ha dicho: " + text)
 
               # Guarda texto y audio
-              save_text(text);
+              # save_text(text);
 
               if(text ==  'uno'):
                 text = '1'
@@ -385,13 +392,13 @@ def recognize_audio():
             try:
               # text = r.recognize_google(audio, language="es-ES") # Convertir el audio en texto usando el servicio de reconocimiento de voz de Google
          
-              audio_name = save_audio(audio);
-              new_audio_path = audio_path + audio_name + ".wav"
-              text = process_audio(new_audio_path)
+              temp_audio_path  = save_audio_temporarily(audio)
+        
+              text = process_audio(temp_audio_path)
               print("Ha dicho: " + text)
 
               # Guarda texto y audio
-              save_text(text);
+              # save_text(text);
 
               if(text ==  'uno'):
                 text = '1'
@@ -443,13 +450,13 @@ def recognize_audio():
                   try:
                     # text = r.recognize_google(audio, language="es-ES") # Convertir el audio en texto usando el servicio de reconocimiento de voz de Google
                
-                    audio_name = save_audio(audio);
-                    new_audio_path = audio_path + audio_name + ".wav"
-                    text = process_audio(new_audio_path)
+                    temp_audio_path  = save_audio_temporarily(audio)
+              
+                    text = process_audio(temp_audio_path)
                     print("Ha dicho: " + text)
 
                     # Guarda texto y audio
-                    save_text(text);
+                    # save_text(text);
 
                     if(text ==  'uno'):
                       text = '1'
@@ -492,13 +499,13 @@ def recognize_audio():
                 try:
                   # text = r.recognize_google(audio, language="es-ES") # Convertir el audio en texto usando el servicio de reconocimiento de voz de Google
              
-                  audio_name = save_audio(audio);
-                  new_audio_path = audio_path + audio_name + ".wav"
-                  text = process_audio(new_audio_path)
+                  temp_audio_path  = save_audio_temporarily(audio)
+            
+                  text = process_audio(temp_audio_path)
                   print("Ha dicho: " + text)
 
                   # Guarda texto y audio
-                  save_text(text);
+                  # save_text(text);
 
                   if(text ==  'uno'):
                     text = '1'
@@ -553,13 +560,13 @@ def recognize_audio():
             try:
               # text = r.recognize_google(audio, language="es-ES") # Convertir el audio en texto usando el servicio de reconocimiento de voz de Google
          
-              audio_name = save_audio(audio);
-              new_audio_path = audio_path + audio_name + ".wav"
-              text = process_audio(new_audio_path)
+              temp_audio_path  = save_audio_temporarily(audio)
+        
+              text = process_audio(temp_audio_path)
               print("Ha dicho: " + text)
 
               # Guarda texto y audio
-              save_text(text);
+              # save_text(text);
 
               if(text ==  'uno'):
                 text = '1'
@@ -614,13 +621,13 @@ def recognize_audio():
             try:
               # text = r.recognize_google(audio, language="es-ES") # Convertir el audio en texto usando el servicio de reconocimiento de voz de Google
          
-              audio_name = save_audio(audio);
-              new_audio_path = audio_path + audio_name + ".wav"
-              text = process_audio(new_audio_path)
+              temp_audio_path  = save_audio_temporarily(audio)
+        
+              text = process_audio(temp_audio_path)
               print("Ha dicho: " + text)
 
               # Guarda texto y audio
-              save_text(text);
+              # save_text(text);
 
               if(text ==  'uno'):
                 text = '1'
@@ -671,13 +678,13 @@ def recognize_audio():
             try:
               # text = r.recognize_google(audio, language="es-ES") # Convertir el audio en texto usando el servicio de reconocimiento de voz de Google
          
-              audio_name = save_audio(audio);
-              new_audio_path = audio_path + audio_name + ".wav"
-              text = process_audio(new_audio_path)
+              temp_audio_path  = save_audio_temporarily(audio)
+        
+              text = process_audio(temp_audio_path)
               print("Ha dicho: " + text)
 
               # Guarda texto y audio
-              save_text(text);
+              # save_text(text);
 
               if(text ==  'uno'):
                 text = '1'

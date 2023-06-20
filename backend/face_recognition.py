@@ -18,10 +18,10 @@ def KerasLayerModule(handle, trainable=False, dtype=tf.float32, name=None, **kwa
 
 model = tf.keras.models.load_model('./Modelos/reconocimientoFacial.h5', custom_objects={'KerasLayer': KerasLayerModule})
 
-print(os.getcwd())
+# print(os.getcwd())
 
 # Ruta donde se guardarán las imágenes
-image_path = "D:\crist\TEC\Semestre 7\INTELIGENCIA ARTIFICIAL\Proyecto 2\images\cristopher"
+# image_path = "C:/Users/Personal/Desktop/TEC/Semestre 7/Inteligencia Artificial/Proyecto 2/images/derian"
 
 def preprocess_image(image):
     # Cambiar el tamaño de la imagen a (224, 224)
@@ -65,13 +65,13 @@ def facial_recognition():
                 message = "Lo siento, pero no reconozco tu rostro."
 
             # Generar el nombre de archivo de imagen basado en la cantidad de archivos en la carpeta
-            files = os.listdir(image_path)
-            number_files = len(files)
-            image_name = "image" + str(number_files + 1) + ".jpg"
+            # files = os.listdir(image_path)
+            # number_files = len(files)
+            # image_name = "image" + str(number_files + 1) + ".jpg"
 
-            # Mover la imagen temporal a la ruta de destino con el nombre generado
-            image_destiny = os.path.join(image_path, image_name)
-            os.rename(temp_img, image_destiny)
+            # # Mover la imagen temporal a la ruta de destino con el nombre generado
+            # image_destiny = os.path.join(image_path, image_name)
+            # os.rename(temp_img, image_destiny)
 
             return message 
 
